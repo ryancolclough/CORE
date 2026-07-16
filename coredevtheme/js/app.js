@@ -6,9 +6,9 @@ import { DialogService } from "../sdk/dialogs.js";
 import { PWAService } from "../sdk/pwa.js";
 
 const PLATFORM = {
-  version:"2.0.2-workspace-meeting-test",
-  build:"20260716.202",
-  releaseId:"CORE-WORKSPACE-MEETING-202",
+  version:"2.0.3-governance-polish",
+  build:"20260716.203",
+  releaseId:"CORE-GOVERNANCE-POLISH-203",
   environment:"Development",
   modules:[]
 };
@@ -314,7 +314,7 @@ function renderShell(content,active="dashboard"){
             <small>Compliance &amp; Organizational Resource Engine</small>
           </span>
         </button>
-        <div class="top-actions"><button class="icon-btn" data-route="workspace" title="Workspace templates">▦</button><button class="icon-btn" data-route="meetings" title="Meeting Manager">◷</button><button class="icon-btn" data-route="committees" title="Committee Manager">♙</button><button class="icon-btn" data-route="settings">⚙</button></div>
+        <div class="top-actions"><button class="icon-btn" data-route="meetings" title="Meeting Manager">◷</button><button class="icon-btn" data-route="committees" title="Committee Manager">♙</button><button class="icon-btn" data-route="settings">⚙</button></div>
       </header>
       <main class="main">${content}</main>
       <div class="version-stamp">CORE Platform ${PLATFORM.version} · Build ${PLATFORM.build}</div>
@@ -327,7 +327,33 @@ function renderShell(content,active="dashboard"){
       </nav>
       <div id="core-modal" class="modal" aria-hidden="true"><div class="modal-panel"><div class="modal-head"><h2 id="modal-title"></h2><button data-close-modal>×</button></div><div id="modal-body"></div></div></div>
     </div>`;
+  requestAnimationFrame(()=>applyAdaptiveChrome(active));
 }
+
+function applyAdaptiveChrome(active){
+  const shell=document.querySelector('.app-shell');
+  const topbar=document.querySelector('.topbar');
+  const dockNode=document.querySelector('.dock');
+  if(!shell||!topbar||!dockNode)return;
+  const focused=active==='meetings' && location.hash.includes('meeting-live');
+  shell.classList.toggle('focus-mode',focused);
+  if(focused)return;
+  let lastY=window.scrollY;
+  const desktop=()=>window.matchMedia('(min-width: 901px)').matches;
+  const showTop=()=>topbar.classList.remove('chrome-hidden');
+  const hideTop=()=>{if(desktop())topbar.classList.add('chrome-hidden')};
+  const showDock=()=>dockNode.classList.remove('chrome-hidden');
+  const hideDock=()=>dockNode.classList.add('chrome-hidden');
+  setTimeout(hideTop,1400);
+  window.onmousemove=e=>{ if(desktop()&&e.clientY<34)showTop(); else if(desktop()&&e.clientY>120)hideTop(); };
+  window.onscroll=()=>{
+    const y=window.scrollY;
+    if(y<lastY){showTop();showDock()}else if(y>lastY+6){hideTop();hideDock()}
+    if(y<24){showDock()}
+    lastY=y;
+  };
+}
+
 function dock(route,label,active){ return `<button data-route="${route}" class="${active===route?"active":""}">${icons[route]||icons.actions}<span>${label}</span></button>`; }
 
 
@@ -361,7 +387,7 @@ function initMotionSystem(){
       el.querySelectorAll("[data-count-to]").forEach(n=>animateNumber(n,Number(n.dataset.countTo)||0,n.dataset.countSuffix||""));
       el.querySelectorAll("[data-progress-value]").forEach(progress);
       shineCard(el,420+(Number(el.style.getPropertyValue("--motion-index"))||0)*120);
-    }else if(el.dataset.seen==="1"){el.classList.remove("is-visible")}
+    }
   }),{threshold:.12,rootMargin:"0px 0px -6% 0px"});
   window.addEventListener("scroll",()=>{lastScrollY=window.scrollY},{passive:true});
   const selectors=".glass-card,.summary-card,.panel,.module-link,.cinematic-health,.health-card,.annual-launch-card,.intelligence-launch-card,.system-health-card,.developer-health-card";
@@ -372,24 +398,17 @@ function initMotionSystem(){
   });
   new MutationObserver(()=>requestAnimationFrame(decorate)).observe(document.body,{childList:true,subtree:true});
   decorate();
-  const periodicSequence=()=>{
-    if(allow()&&document.visibilityState==="visible"){
-      const cards=[...document.querySelectorAll(".motion-card.is-visible")].slice(0,10);
-      cards.forEach((card,index)=>shineCard(card,index*380));
-    }
-    setTimeout(periodicSequence,16000+Math.random()*5000);
-  };
-  setTimeout(periodicSequence,9000);
+
 }
 
 async function boot(){
   await pwa.init();
-  const registry = await fetch("data/module-registry.json?v=20260716.202", {cache:"no-store"}).then(r=>{
+  const registry = await fetch("data/module-registry.json?v=20260716.203", {cache:"no-store"}).then(r=>{
     if(!r.ok) throw new Error(`Module registry HTTP ${r.status}`);
     return r.json();
   });
   for(const item of registry.filter(x=>x.enabled)){
-    const mod = await import(`${item.entry}?v=20260716.202`);
+    const mod = await import(`${item.entry}?v=20260716.203`);
     PLATFORM.modules.push(item);
     mod.default({router,state,storage,events,themes,dialogs,pwa,renderShell,toast,platform:PLATFORM});
   }

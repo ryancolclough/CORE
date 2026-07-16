@@ -1,0 +1,13 @@
+CORE 2.0.3 — Governance Polish Test Build
+
+- Premium Committee Manager card and detail layouts
+- Wider desktop canvas and responsive mobile layouts
+- Workspace management moved away from the main dashboard
+- Desktop top navigation auto-hides; bottom dock hides while scrolling
+- Live Meeting focus mode hides normal navigation
+- Live Meeting inputs retain focus and autosave quietly
+- Added unresolved outcomes and follow-up assignments
+- Follow-up owner, committee, due date, priority, response, and evidence fields
+- Agenda terminology refined: Inventory & Insurable Assets, Building Accessibility Inspection, Strategic / Long Range Plan
+- Entrance animations run once; periodic shine loop removed
+- Faster, less intrusive motion

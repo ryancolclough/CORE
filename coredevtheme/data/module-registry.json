@@ -7,6 +7,20 @@
     "enabled": true
   },
   {
+    "id": "workspace",
+    "name": "Workspace Manager",
+    "version": "1.0.0",
+    "entry": "../modules/workspace/workspace.js",
+    "enabled": true
+  },
+  {
+    "id": "committees",
+    "name": "Committee Manager",
+    "version": "1.0.0",
+    "entry": "../modules/committees/committees.js",
+    "enabled": true
+  },
+  {
     "id": "review",
     "name": "Review Engine",
     "version": "1.5.0",

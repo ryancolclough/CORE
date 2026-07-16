@@ -6,9 +6,9 @@ import { DialogService } from "../sdk/dialogs.js";
 import { PWAService } from "../sdk/pwa.js";
 
 const PLATFORM = {
-  version:"1.9.0-pwa-foundation",
-  build:"20260716.001",
-  releaseId:"CORE-PWA-FOUNDATION-001",
+  version:"2.0.0-committee-workspace",
+  build:"20260716.200",
+  releaseId:"CORE-COMMITTEE-WORKSPACE-200",
   environment:"Development",
   modules:[]
 };
@@ -295,6 +295,8 @@ const icons={
   amendments:'<svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6M9 18h4"/></svg>',
   annual:'<svg viewBox="0 0 24 24"><path d="M4 5h16v15H4z"/><path d="M8 3v4M16 3v4M4 9h16"/><path d="M8 13h3M13 13h3M8 17h3"/></svg>',
   export:'<svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 20h16"/></svg>',
+  committees:'<svg viewBox="0 0 24 24"><path d="M4 20v-2a4 4 0 0 1 4-4h2"/><circle cx="9" cy="7" r="3"/><path d="M14 20v-2a4 4 0 0 1 4-4h1"/><circle cx="17" cy="8" r="2.5"/></svg>',
+  workspace:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="5"/><rect x="13" y="10" width="8" height="11"/><rect x="3" y="13" width="8" height="8"/></svg>',
   settings:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1A8 8 0 0 0 15 6l-.3-2.6h-4L10.4 6A8 8 0 0 0 8.9 7.1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1A8 8 0 0 0 10.4 18l.3 2.6h4L15 18a8 8 0 0 0 1.5-1.1l2.4 1 2-3.4-2-1.5a7 7 0 0 0 .1-1z"/></svg>'
 };
 
@@ -312,7 +314,7 @@ function renderShell(content,active="dashboard"){
             <small>Compliance &amp; Organizational Resource Engine</small>
           </span>
         </button>
-        <div class="top-actions"><button class="icon-btn" data-route="settings">⚙</button></div>
+        <div class="top-actions"><button class="icon-btn" data-route="workspace" title="Customize workspace">▦</button><button class="icon-btn" data-route="committees" title="Committee Manager">♙</button><button class="icon-btn" data-route="settings">⚙</button></div>
       </header>
       <main class="main">${content}</main>
       <div class="version-stamp">CORE Platform ${PLATFORM.version} · Build ${PLATFORM.build}</div>
@@ -382,12 +384,12 @@ function initMotionSystem(){
 
 async function boot(){
   await pwa.init();
-  const registry = await fetch("data/module-registry.json?v=20260715.001", {cache:"no-store"}).then(r=>{
+  const registry = await fetch("data/module-registry.json?v=20260716.200", {cache:"no-store"}).then(r=>{
     if(!r.ok) throw new Error(`Module registry HTTP ${r.status}`);
     return r.json();
   });
   for(const item of registry.filter(x=>x.enabled)){
-    const mod = await import(`${item.entry}?v=20260715.001`);
+    const mod = await import(`${item.entry}?v=20260716.200`);
     PLATFORM.modules.push(item);
     mod.default({router,state,storage,events,themes,dialogs,pwa,renderShell,toast,platform:PLATFORM});
   }

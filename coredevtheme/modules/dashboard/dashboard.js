@@ -24,9 +24,10 @@ export default function register(ctx){
         <b>${item.review.status === "amendment" ? "Amendment" : "Review"}</b>
       </button>`).join("") : `<div class="dashboard-empty">No urgent governance items.</div>`;
 
+    const workspace = ctx.storage?.get("WORKSPACE_CONFIG", {name:"My Workspace"}) || {name:"My Workspace"};
     const content = `
       <section class="hero cinematic-hero dashboard-intro">
-        <div class="eyebrow">Temple Board Governance Centre</div>
+        <div class="eyebrow">${workspace.name} · Temple Board Governance Centre</div>
         <h1>Good ${state.greeting()}, Ryan.</h1>
         <p>Your compliance, committee work, records, and upcoming governance responsibilities—organized in one place.</p>
       </section>
@@ -53,8 +54,9 @@ export default function register(ctx){
       </section>
 
       <section class="dashboard-section">
-        <div class="section-heading"><div><span>Work faster</span><h2>Quick Actions</h2></div><small>Common governance tasks</small></div>
+        <div class="section-heading"><div><span>Work faster</span><h2>Quick Actions</h2></div><small><button class="inline-link" data-route="workspace">Customize Workspace</button></small></div>
         <div class="quick-actions-grid">
+          <button class="quick-action glass-card" data-route="committees"><i>♙</i><span><strong>Committees</strong><small>Open Committee Manager</small></span></button>
           <button class="quick-action glass-card" data-route="review"><i>✓</i><span><strong>Start Review</strong><small>Assess a by-law section</small></span></button>
           <button class="quick-action glass-card" data-route="amendments"><i>✎</i><span><strong>New Amendment</strong><small>Open amendment workflow</small></span></button>
           <button class="quick-action glass-card" data-route="actions"><i>＋</i><span><strong>Add Action</strong><small>Assign governance work</small></span></button>

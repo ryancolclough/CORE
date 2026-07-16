@@ -1,4 +1,4 @@
-const VERSION = "core-pwa-1.9.0-20260716.001";
+const VERSION = "core-v2-1.9.0-20260716.001";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const APP_ROOT = new URL("./", self.location.href);

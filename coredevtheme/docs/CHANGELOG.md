@@ -1,3 +1,11 @@
+# CORE Changelog
+
+## 2.0.0 — Committee Manager & Workspace Foundation
+- Added customizable workspace manager with role templates, widget library, ordering, sizing, and persistence.
+- Added Committee Manager with committee dashboard, members, tasks, projects, meetings, status, and local persistence.
+- Added review-form interaction isolation patch so form controls no longer trigger article navigation.
+- Preserved PWA, offline shell, browser history, and motion system.
+
 # CORE 1.9.0 — PWA Foundation
 
 - Installable web app manifest and app icons.

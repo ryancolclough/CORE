@@ -1,0 +1,12 @@
+CORE v2.0.0 — Committee Manager & Workspace Foundation
+
+FEATURES
+- Workspace customization with role templates
+- Widget library, order controls, and size controls
+- Committee Manager dashboard and committee workspaces
+- Add committees, members, tasks, and projects
+- Review-screen click/navigation patch
+- PWA and browser history preserved
+
+UPLOAD
+Replace the existing coredevtheme folder in the CORE repository. Keep orefinal beside it.

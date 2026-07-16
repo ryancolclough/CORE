@@ -50,8 +50,35 @@ export default function register(ctx){
     const article=state.articles[articleIndex], section=article.sections[sectionIndex], existing=state.getReview(section)||{};
     const authority=new Set(existing.authorities||[]), related=existing.relatedRecords||{}, history=Array.isArray(existing.history)?existing.history:[];
     const content=`<div class="backline"><button data-back-article>‹ Article ${article.roman}</button></div><section class="record-summary"><div><span>Section ${section.number}</span><strong>${section.title}</strong></div><div class="record-meta"><div><span>Status</span><strong>${statusLabel(existing.status)}</strong></div><div><span>Review ID</span><strong>${existing.reviewId||"Not assigned"}</strong></div><div><span>Last Review</span><strong>${existing.reviewDate||"Not reviewed"}</strong></div><div><span>Next Review</span><strong>${existing.nextReview||"Not scheduled"}</strong></div><div><span>Reviewer</span><strong>${existing.reviewedBy||"Not assigned"}</strong></div><div><span>Committee</span><strong>${existing.responsibleCommittee||"By-Laws Committee"}</strong></div></div></section><div class="review-layout"><article class="paper"><div class="crumb">CORE › Article ${article.roman} › Section ${section.number}</div><div class="article-kicker">Article ${article.roman}</div><h2>${article.title}</h2><div class="gold-rule"></div><div class="section-label">Section ${section.number}</div><h3>${section.title}</h3><div class="copy">${section.paragraphs.map(p=>`<p>${escapeHTML(p)}</p>`).join("")}</div></article><aside class="review-card"><h2>Governance Review</h2><form id="review-form"><div class="field"><label>Responsible Committee</label><input name="responsibleCommittee" value="${escapeHTML(existing.responsibleCommittee||"By-Laws Committee")}"></div><div class="field"><label>Compliance Matrix</label><div class="matrix-grid">${matrixRow("Ontario Not-for-Profit Corporations Act, 2010",authority)}${matrixRow("Grand Lodge governance documents",authority)}${matrixRow("Articles of Incorporation",authority)}${matrixRow("Temple Board Corporate By-Laws",authority)}${matrixRow("Previous CORE Reviews",authority)}</div></div><div class="field"><label>Analysis / Review Notes</label><textarea name="notes">${escapeHTML(existing.notes||"")}</textarea></div><div class="field"><label>Institutional Knowledge</label><textarea name="institutionalKnowledge" placeholder="Record why this wording exists, lessons learned, and what future boards should know.">${escapeHTML(existing.institutionalKnowledge||"")}</textarea></div><div class="field"><label>Reviewer</label><input name="reviewedBy" value="${escapeHTML(existing.reviewedBy||state.settings.reviewer||"")}"></div><div class="field"><label>Related Records</label><div class="related-grid">${relatedField("Meeting","meeting",related.meeting)}${relatedField("Motion","motion",related.motion)}${relatedField("Amendment","amendment",related.amendment)}${relatedField("ORE Publication","orePublication",related.orePublication)}</div></div><div class="field"><label>Decision</label><div class="decision-grid">${decision("complete","Review Complete",existing.status)}${decision("discussion","Board Discussion Required",existing.status)}${decision("amendment","Amendment Recommended",existing.status)}</div></div><div class="field"><label>Governance Timeline</label><div class="timeline-list">${buildTimeline(existing)}</div></div>${historyMarkup(history)}<div id="amendment-slot"></div><div class="actions"><button class="btn" type="submit">Save Review</button><button class="btn secondary" type="button" data-save-next>Save & Next</button>${existing.reviewId?'<button class="btn danger" type="button" data-clear-current>Clear Record</button>':''}</div></form></aside></div>`;
-    renderShell(content,"review"); events.emit("review:screen",{section,existing});
+    renderShell(content,"review"); bindReviewFormGuards(); events.emit("review:screen",{section,existing});
   }
+  function bindReviewFormGuards(){
+    const form=document.querySelector("#review-form");
+    if(!form) return;
+    // Keep form interactions inside Review. This prevents global card/router handlers
+    // from interpreting checkbox, radio, input, textarea, and label clicks as navigation.
+    form.addEventListener("click",event=>{
+      const saveNext=event.target.closest("[data-save-next]");
+      const clear=event.target.closest("[data-clear-current]");
+      const createAction=event.target.closest("[data-create-review-action]");
+      event.stopPropagation();
+      if(saveNext){event.preventDefault();saveReview(true);return;}
+      if(clear){
+        event.preventDefault();
+        const section=state.articles[state.articleIndex].sections[state.sectionIndex];
+        state.removeReview(section);toast("Review record cleared.");reviewScreen(state.articleIndex,state.sectionIndex);return;
+      }
+      if(createAction){
+        event.preventDefault();
+        const article=state.articles[state.articleIndex],section=article.sections[state.sectionIndex],record=state.getReview(section)||{};
+        events.emit("actions:create-from-review",{title:`Follow up Section ${section.number} — ${section.title}`,description:record.notes||record.institutionalKnowledge||"",section:String(section.number),articleIndex:state.articleIndex,sectionIndex:state.sectionIndex,assignedCommittee:record.responsibleCommittee||"By-Laws Committee"});
+      }
+    });
+    form.addEventListener("pointerdown",event=>event.stopPropagation());
+    form.addEventListener("change",event=>event.stopPropagation());
+    form.querySelectorAll("button").forEach(button=>{if(!button.getAttribute("type"))button.type="button";});
+  }
+
   function statusLabel(s){return s==="complete"?"Review Complete":s==="discussion"?"Discussion Required":s==="amendment"?"Amendment Recommended":"Not Reviewed"}
   function matrixRow(name,set){return `<label class="matrix-row"><input type="checkbox" name="authority" value="${name}" ${set.has(name)?"checked":""}><span>${name}</span><b>${set.has(name)?"Reviewed":"Pending"}</b></label>`}
   function relatedField(label,name,value=""){return `<div><span>${label}</span><input name="${name}" value="${escapeHTML(value||"")}" placeholder="Optional reference"></div>`}

@@ -16,7 +16,7 @@
   {
     "id": "committees",
     "name": "Committee Manager",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "entry": "../modules/committees/committees.js",
     "enabled": true
   },
@@ -58,7 +58,7 @@
   {
     "id": "developer",
     "name": "CORE Development Committee",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "entry": "../modules/developer/developer.js",
     "enabled": true
   },

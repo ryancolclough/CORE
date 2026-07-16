@@ -57,13 +57,13 @@ export default function register(ctx){
       </section>
 
       <section class="panel">
-        <div class="panel-head"><div><h2>CORE Development Committee</h2><p>Visual roadmap, current focus, product decisions, releases, and diagnostics.</p></div></div>
+        <div class="panel-head"><div><h2>CORE Development Committee</h2><p>Administration access to the same CORE Development Committee shown in Committee Manager.</p></div></div>
         <div class="settings-diagnostic-launch">
           <span>
-            <strong>Open Developer Console</strong>
-            <small>Module health, validation, runtime errors, releases, and support reports.</small>
+            <strong>Open CORE Development Mission Control</strong>
+            <small>Review the roadmap, active initiatives, decisions, releases, and platform diagnostics.</small>
           </span>
-          <button class="btn" data-route="developer">Open Development Roadmap</button>
+          <button class="btn" data-route="developer">Open Mission Control</button>
         </div>
       </section>
 

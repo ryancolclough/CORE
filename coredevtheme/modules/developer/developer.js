@@ -14,7 +14,7 @@ export default function register(ctx){
     if(project){ router.go("developer",{view:"roadmap"}); setTimeout(()=>document.getElementById(`dev-project-${project.dataset.devProject}`)?.scrollIntoView({behavior:"smooth",block:"start"}),50); return; }
     const feature=event.target.closest("[data-dev-feature]");
     if(feature){ router.go("developer-task",{project:feature.dataset.project,feature:feature.dataset.devFeature}); return; }
-    if(event.target.closest("[data-sync-roadmap]")){ storage.remove("DEV_ROADMAP_CACHE"); await renderDevelopment("roadmap"); toast("Development roadmap synchronized with this build."); return; }
+    if(event.target.closest("[data-sync-roadmap]")){ storage.remove("DEV_ROADMAP_CACHE"); await renderDevelopment("roadmap"); toast("Roadmap refreshed from CORE 3.0.1."); return; }
     if(event.target.closest("[data-dev-back]")){ router.go("developer",{view:"roadmap"}); return; }
     if(event.target.closest("[data-copy-dev-summary]")){
       const data=await getRoadmap();
@@ -56,7 +56,7 @@ export default function register(ctx){
       const next=features.filter(f=>f.status==="next");
 
       renderShell(`
-        <div class="backline"><button type="button" data-route="settings">‹ Settings</button></div>
+        <div class="backline"><button type="button" data-route="committees">‹ All Committees</button></div>
         <section class="dev-hero glass-card">
           <div>
             <div class="eyebrow">CORE Development Committee · Build ${escapeHTML(data.build)}</div>
@@ -104,7 +104,7 @@ export default function register(ctx){
       </section>
 
       <section class="panel dev-recent">
-        <div class="panel-head"><div><h2>Recently Completed</h2><p>Proof of momentum</p></div><button class="btn secondary" type="button" data-sync-roadmap>Sync This Build</button></div>
+        <div class="panel-head"><div><h2>Recently Completed</h2><p>Proof of momentum</p></div><button class="btn secondary" type="button" data-sync-roadmap>Refresh Roadmap</button></div>
         <div class="dev-completed-grid">${data.recentlyCompleted.map(item=>`<div><span>✓</span><strong>${escapeHTML(item)}</strong></div>`).join("")}</div>
       </section>
 

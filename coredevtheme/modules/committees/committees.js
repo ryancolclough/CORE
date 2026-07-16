@@ -372,7 +372,12 @@ export default function register(ctx) {
   document.addEventListener("click", event => {
     const open = event.target.closest("[data-open-committee]");
     if (open) {
-      router.go("committee", { id: open.dataset.openCommittee, tab: "overview" });
+      const committeeId = open.dataset.openCommittee;
+      if (committeeId === "core-development") {
+        router.go("developer", { view: "roadmap" });
+      } else {
+        router.go("committee", { id: committeeId, tab: "overview" });
+      }
       return;
     }
 

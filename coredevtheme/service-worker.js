@@ -1,4 +1,4 @@
-const VERSION = "core-v2-2.0.6-20260716.207";
+const VERSION = "core-v3-3.0.1-20260716.301";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const APP_ROOT = new URL("./", self.location.href);
@@ -19,6 +19,7 @@ const CORE_ASSETS = [
   "./sdk/dialogs.js",
   "./sdk/pwa.js",
   "./data/module-registry.json",
+  "./data/development-roadmap.json",
   "./assets/branding/core-header-logo.png",
   "./assets/themes/cinematic-night.webp",
   "./assets/themes/cinematic-night-mobile.webp",
@@ -37,6 +38,12 @@ const CORE_ASSETS = [
   "./modules/actions/actions.js",
   "./modules/developer/developer.css",
   "./modules/developer/developer.js",
+  "./modules/workspace/workspace.js",
+  "./modules/workspace/workspace.css",
+  "./modules/meetings/meetings.js",
+  "./modules/meetings/meetings.css",
+  "./modules/committees/committees.js",
+  "./modules/committees/committees.css",
   "./modules/settings/settings.css",
   "./modules/settings/settings.js",
   "./modules/annual/annual.css",

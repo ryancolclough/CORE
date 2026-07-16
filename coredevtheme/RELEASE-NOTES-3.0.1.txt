@@ -1,0 +1,20 @@
+CORE 3.0.1 — Mission Control Connection
+
+FIXED
+- The visible CORE build bar and Settings now report CORE 3.0.1.
+- Loaded the missing Development Committee stylesheet.
+- CORE Development now opens as the real visual Mission Control committee.
+- The CORE Development card in Committee Manager opens the roadmap directly.
+- Mission Control returns to All Committees instead of behaving like a Settings utility.
+- Settings remains an alternate administrative entry point to the same committee.
+- Renamed the roadmap refresh action so its purpose is clear.
+- Updated PWA cache identifiers and bundled roadmap data for reliable deployment.
+
+PRESERVED
+- Committee Manager premium cards
+- Amendment Centre
+- Action Centre
+- Meeting Manager foundation
+- PWA installation and offline shell
+- Browser Back and Forward
+- Existing local committee, review, meeting, and action data

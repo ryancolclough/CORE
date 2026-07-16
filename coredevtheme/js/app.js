@@ -6,9 +6,9 @@ import { DialogService } from "../sdk/dialogs.js";
 import { PWAService } from "../sdk/pwa.js";
 
 const PLATFORM = {
-  version:"2.0.7-amendment-centre",
-  build:"20260716.207",
-  releaseId:"CORE-AMENDMENT-CENTRE-207",
+  version:"3.0.1-mission-control",
+  build:"20260716.301",
+  releaseId:"CORE-MISSION-CONTROL-301",
   environment:"Development",
   modules:[]
 };

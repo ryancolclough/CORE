@@ -1,1 +1,0 @@
-Replace core-logo.png with any transparent PNG using the same filename. No code changes are required.

@@ -1,0 +1,18 @@
+CORE 2.0.6 — ACTION CENTRE FUNCTIONAL FIX
+
+FIXED
+- Save Action now validates and saves reliably on iOS Safari, PWA, and desktop.
+- Cancel closes the editor without saving.
+- Edit, Complete, Reopen, Delete, filters, and New Action buttons use explicit button behaviour.
+- Action fields retain focus and no longer leak clicks into the global router.
+- Assigned Officer is selected from committee membership where available.
+- Changing committee refreshes available officer choices.
+- Saved actions immediately appear in Action Centre.
+- Saved and status-updated actions synchronize into the assigned committee task list.
+- Action changes emit platform events for future dashboard/notification updates.
+
+PRESERVED
+- Dashboard and transparent CORE header logo fixes from 2.0.5.
+- Committee Manager polish.
+- Meeting Manager foundation.
+- PWA, browser history, review records, and existing local data.

@@ -1,7 +1,7 @@
 import { escapeHTML } from "../../sdk/ui.js";
 
 export default function register(ctx){
-  const { router, state, renderShell, toast, events, dialogs } = ctx;
+  const { router, state, renderShell, toast, events, dialogs, storage } = ctx;
   let currentFilter = "active";
 
   router.register("actions", () => renderActions(currentFilter));
@@ -134,11 +134,11 @@ export default function register(ctx){
         <div class="panel-head action-head">
           <div><h2>Action Items</h2><p>${visible.length} shown · ${summary.total} total</p></div>
           <div class="action-controls">
-            <button class="filter-btn ${filter==="active"?"active":""}" data-action-filter="active">Active</button>
-            <button class="filter-btn ${filter==="overdue"?"active":""}" data-action-filter="overdue">Overdue</button>
-            <button class="filter-btn ${filter==="completed"?"active":""}" data-action-filter="completed">Completed</button>
-            <button class="filter-btn ${filter==="all"?"active":""}" data-action-filter="all">All</button>
-            <button class="btn" data-new-action>New Action</button>
+            <button type="button" class="filter-btn ${filter==="active"?"active":""}" data-action-filter="active">Active</button>
+            <button type="button" class="filter-btn ${filter==="overdue"?"active":""}" data-action-filter="overdue">Overdue</button>
+            <button type="button" class="filter-btn ${filter==="completed"?"active":""}" data-action-filter="completed">Completed</button>
+            <button type="button" class="filter-btn ${filter==="all"?"active":""}" data-action-filter="all">All</button>
+            <button type="button" class="btn" data-new-action>New Action</button>
           </div>
         </div>
         <div class="panel-body">${rows}</div>
@@ -161,11 +161,11 @@ export default function register(ctx){
           <small>${escapeHTML(item.assignedCommittee || "Unassigned")} · ${escapeHTML(statusLabel(item.status))}${item.dueDate ? ` · Due ${escapeHTML(item.dueDate)}` : ""}</small>
         </div>
         <div class="action-links">
-          ${item.articleIndex !== undefined ? `<button data-open-action-source="${item.id}">Source</button>` : ""}
-          <button data-edit-action="${item.id}">Edit</button>
+          ${item.articleIndex !== undefined ? `<button type="button" data-open-action-source="${item.id}">Source</button>` : ""}
+          <button type="button" data-edit-action="${item.id}">Edit</button>
           ${item.status === "completed"
-            ? `<button data-reopen-action="${item.id}">Reopen</button>`
-            : `<button data-complete-action="${item.id}">Complete</button>`}
+            ? `<button type="button" data-reopen-action="${item.id}">Reopen</button>`
+            : `<button type="button" data-complete-action="${item.id}">Complete</button>`}
         </div>
       </article>`;
   }
@@ -173,25 +173,61 @@ export default function register(ctx){
   function openEditor(id=""){
     const existing = state.actionItems().find(x => x.id === id) || {};
     dialogs.open(existing.id ? "Edit Action" : "Create Action", `
-      <div class="action-modal" data-action-modal>
+      <form class="action-modal" id="action-editor-form" data-action-modal novalidate>
         <input type="hidden" id="modal-action-id" value="${escapeHTML(existing.id || "")}">
-        <div class="field"><label>Title</label><input id="modal-action-title" value="${escapeHTML(existing.title || "")}" placeholder="What needs to be done?"></div>
-        <div class="field"><label>Description</label><textarea id="modal-action-description" placeholder="Expected result and context.">${escapeHTML(existing.description || "")}</textarea></div>
+        <div class="field"><label for="modal-action-title">Title <span aria-hidden="true">*</span></label><input id="modal-action-title" required value="${escapeHTML(existing.title || "")}" placeholder="What needs to be done?"></div>
+        <div class="field"><label for="modal-action-description">Description</label><textarea id="modal-action-description" placeholder="Expected result and context.">${escapeHTML(existing.description || "")}</textarea></div>
         <div class="action-form-grid">
           <div class="field"><label>Assigned Committee</label><select id="modal-action-committee">${committeeOptions(existing.assignedCommittee)}</select></div>
-          <div class="field"><label>Assigned Officer</label><input id="modal-action-officer" value="${escapeHTML(existing.assignedOfficer || "")}" placeholder="Optional"></div>
+          <div class="field"><label for="modal-action-officer">Assigned Officer</label><select id="modal-action-officer">${officerOptions(existing.assignedCommittee, existing.assignedOfficer)}</select></div>
           <div class="field"><label>Priority</label><select id="modal-action-priority">${priorityOptions(existing.priority)}</select></div>
           <div class="field"><label>Status</label><select id="modal-action-status">${statusOptions(existing.status)}</select></div>
           <div class="field"><label>Due Date</label><input id="modal-action-due" type="date" value="${escapeHTML(existing.dueDate || "")}"></div>
           <div class="field"><label>Source Reference</label><input id="modal-action-source" value="${escapeHTML(existing.sourceReference || "")}" placeholder="Section, motion, meeting, etc."></div>
         </div>
         <div class="actions">
-          <button class="btn" data-modal-save-action>Save Action</button>
-          <button class="btn secondary" data-modal-cancel-action>Cancel</button>
-          ${existing.id ? `<button class="btn danger" data-modal-delete-action="${existing.id}">Delete</button>` : ""}
+          <button class="btn" type="submit" data-modal-save-action>Save Action</button>
+          <button class="btn secondary" type="button" data-modal-cancel-action>Cancel</button>
+          ${existing.id ? `<button class="btn danger" type="button" data-modal-delete-action="${existing.id}">Delete</button>` : ""}
         </div>
-      </div>
+      </form>
     `);
+
+    // Bind directly after the modal exists. This avoids global router/click handlers
+    // swallowing form interactions on iOS Safari and installed PWA mode.
+    requestAnimationFrame(() => {
+      const form = document.querySelector("#action-editor-form");
+      if(!form) return;
+
+      ["pointerdown","click","input","change","keydown"].forEach(type => {
+        form.addEventListener(type, event => event.stopPropagation());
+      });
+
+      form.addEventListener("submit", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        saveEditor();
+      });
+
+      form.querySelector("[data-modal-cancel-action]")?.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        dialogs.close();
+      });
+
+      form.querySelector("[data-modal-delete-action]")?.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        deleteAction(event.currentTarget.dataset.modalDeleteAction);
+      });
+
+      form.querySelector("#modal-action-committee")?.addEventListener("change", event => {
+        const officer = form.querySelector("#modal-action-officer");
+        if(officer) officer.innerHTML = officerOptions(event.currentTarget.value, officer.value);
+      });
+
+      form.querySelector("#modal-action-title")?.focus({preventScroll:true});
+    });
   }
 
   function saveEditor(){
@@ -236,6 +272,8 @@ export default function register(ctx){
     else items.unshift(action);
 
     state.saveActionItems(items);
+    syncCommitteeTask(action);
+    events.emit("actions:changed", { action, mode: existing ? "updated" : "created" });
     dialogs.close();
     toast(`${id} saved.`);
     renderActions(currentFilter);
@@ -252,6 +290,8 @@ export default function register(ctx){
       {date:new Date().toISOString(),event:`Status changed to ${statusLabel(status)}`,note:""}
     ];
     state.saveActionItems(items);
+    syncCommitteeTask(item);
+    events.emit("actions:changed", { action:item, mode:"status" });
     toast(`${id} ${status === "completed" ? "completed" : "reopened"}.`);
     renderActions(currentFilter);
   }
@@ -259,9 +299,67 @@ export default function register(ctx){
   function deleteAction(id){
     if(!confirm(`Delete ${id}?`)) return;
     state.saveActionItems(state.actionItems().filter(x => x.id !== id));
+    removeCommitteeTask(id);
+    events.emit("actions:changed", { id, mode:"deleted" });
     dialogs.close();
     toast(`${id} deleted.`);
     renderActions(currentFilter);
+  }
+
+  function committeeRecords(){
+    return storage?.get("COMMITTEES", []) || [];
+  }
+
+  function officerOptions(committeeName="", current=""){
+    const committees = committeeRecords();
+    const selected = committees.find(item => item.name === committeeName);
+    const names = new Set();
+    if(selected){
+      (selected.members || []).forEach(member => names.add(member.name));
+      if(selected.chair && selected.chair !== "Unassigned") names.add(selected.chair);
+    }
+    committees.forEach(committee => (committee.members || []).forEach(member => names.add(member.name)));
+    if(current) names.add(current);
+    const choices = ["", ...Array.from(names).sort((a,b)=>a.localeCompare(b))];
+    return choices.map(name => option(name, name || "Unassigned / Committee owned", current || "")).join("");
+  }
+
+  function syncCommitteeTask(action){
+    if(!storage || !action.assignedCommittee) return;
+    const committees = committeeRecords();
+    const committee = committees.find(item => item.name === action.assignedCommittee);
+    if(!committee) return;
+    committee.tasks = Array.isArray(committee.tasks) ? committee.tasks : [];
+    const taskIndex = committee.tasks.findIndex(task => task.actionId === action.id);
+    const task = {
+      actionId:action.id,
+      title:action.title,
+      status:action.status === "completed" ? "complete" : action.status.replaceAll("_","-"),
+      due:action.dueDate || "",
+      assignedOfficer:action.assignedOfficer || "",
+      priority:action.priority || "medium",
+      sourceReference:action.sourceReference || ""
+    };
+    if(taskIndex >= 0) committee.tasks[taskIndex] = {...committee.tasks[taskIndex], ...task};
+    else committee.tasks.unshift(task);
+    committee.activity = Array.isArray(committee.activity) ? committee.activity : [];
+    committee.activity.unshift({
+      title:`Action ${taskIndex >= 0 ? "updated" : "created"}: ${action.title}`,
+      date:new Date().toISOString().slice(0,10)
+    });
+    storage.set("COMMITTEES", committees);
+  }
+
+  function removeCommitteeTask(actionId){
+    if(!storage) return;
+    const committees = committeeRecords();
+    let changed = false;
+    committees.forEach(committee => {
+      const before = (committee.tasks || []).length;
+      committee.tasks = (committee.tasks || []).filter(task => task.actionId !== actionId);
+      if(committee.tasks.length !== before) changed = true;
+    });
+    if(changed) storage.set("COMMITTEES", committees);
   }
 
   function committeeOptions(current=""){

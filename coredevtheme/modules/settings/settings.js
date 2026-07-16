@@ -1,5 +1,5 @@
 export default function register(ctx){
-  const { router, renderShell, state, themes, platform } = ctx;
+  const { router, renderShell, state, themes, platform, pwa } = ctx;
 
   router.register("settings",()=>{
     const modules = platform.modules.map(m=>`
@@ -12,7 +12,7 @@ export default function register(ctx){
       <section class="panel">
         <div class="panel-head"><div><h2>CORE Platform</h2><p>${platform.environment}</p></div></div>
         <div class="about-grid">
-          ${about("Platform Version","1.7.2 Theme Lab")}
+          ${about("Platform Version",platform.version)}
           ${about("Build",platform.build)}
           ${about("Release ID",platform.releaseId)}
           ${about("ORE Connection",state.articles.length?"Connected":"Unavailable")}
@@ -27,7 +27,21 @@ export default function register(ctx){
           ${about("Estimated Work",state.intelligenceSummary().estimated + " min")}
           ${about("Open Actions",state.actionSummary().open)}
           ${about("Overdue Actions",state.actionSummary().overdue)}
-          ${about("Platform Health",state.articles.length && platform.modules.length === 9 ? "100%" : "Attention")}
+          ${about("PWA Mode",pwa.status().standalone ? "Installed" : "Browser") }
+          ${about("Service Worker",pwa.status().registered ? "Active" : "Starting") }
+          ${about("Notifications",pwa.status().notificationPermission)}
+          ${about("Platform Health",state.articles.length && platform.modules.length >= 10 ? "100%" : "Attention")}
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><div><h2>Install, Offline & Notifications</h2><p>Progressive Web App foundation.</p></div></div>
+        <div class="settings-diagnostic-launch">
+          <span>
+            <strong>Open PWA Control Centre</strong>
+            <small>Install CORE, enable notifications, test offline readiness, manage preferences, and apply updates.</small>
+          </span>
+          <button class="btn" data-route="pwa">Open PWA Settings</button>
         </div>
       </section>
 

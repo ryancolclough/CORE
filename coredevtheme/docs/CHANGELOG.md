@@ -1,3 +1,14 @@
+# CORE 1.9.0 — PWA Foundation
+
+- Installable web app manifest and app icons.
+- Service worker with offline app shell and runtime caching.
+- Dedicated PWA & Notifications module.
+- iPhone Add to Home Screen guidance.
+- Notification permission and preference controls.
+- Test notification support.
+- Update detection and activation controls.
+- Push event receiver ready for future backend delivery.
+
 # CORE Theme Lab 1.7.2
 
 Build `20260715.001`

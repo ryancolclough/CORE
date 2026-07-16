@@ -1,0 +1,12 @@
+.pwa-status-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.pwa-status-card{padding:18px;border:1px solid rgba(255,255,255,.1);border-radius:20px;background:rgba(255,255,255,.04)}
+.pwa-status-card small{display:block;color:var(--muted);margin-bottom:8px}.pwa-status-card strong{font-size:1.05rem}
+.pwa-status-card[data-tone="good"] strong{color:#69d99a}.pwa-status-card[data-tone="warn"] strong{color:#e9c36b}.pwa-status-card[data-tone="bad"] strong{color:#ef7d73}
+.pwa-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.pwa-action{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:20px;border:1px solid rgba(255,255,255,.1);border-radius:22px;background:rgba(255,255,255,.035)}
+.pwa-action span{display:grid;gap:5px}.pwa-action small{color:var(--muted);line-height:1.45}.pwa-action button{white-space:nowrap}
+.notification-pref-list{display:grid;gap:10px}.notification-pref{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 16px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(255,255,255,.025)}
+.notification-pref span{display:grid;gap:4px}.notification-pref small{color:var(--muted)}.notification-pref input{width:20px;height:20px;accent-color:#c8a45d}
+.ios-install-steps{margin:12px 0 0;padding-left:22px;color:var(--muted);line-height:1.65}.pwa-note{padding:14px 16px;border-left:3px solid #c8a45d;background:rgba(200,164,93,.08);border-radius:8px 16px 16px 8px;color:var(--muted)}
+@media(max-width:900px){.pwa-status-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pwa-action-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.pwa-status-grid{grid-template-columns:1fr}.pwa-action{align-items:flex-start;flex-direction:column}.pwa-action button{width:100%}}

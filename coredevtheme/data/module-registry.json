@@ -61,5 +61,12 @@
     "version": "1.0.1",
     "entry": "../modules/intelligence/intelligence.js",
     "enabled": true
+  },
+  {
+    "id": "pwa",
+    "name": "PWA & Notifications",
+    "version": "1.0.0",
+    "entry": "../modules/pwa/pwa.js",
+    "enabled": true
   }
 ]

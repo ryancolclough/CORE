@@ -1,0 +1,23 @@
+CORE 1.9.0 — PWA FOUNDATION
+
+UPLOAD
+1. Keep your existing CORE repository structure:
+   CORE/
+   ├── coredevtheme/
+   └── orefinal/
+2. Replace the existing coredevtheme folder with the folder in this package.
+3. Do not remove orefinal.
+4. Commit and wait for GitHub Pages to deploy.
+5. Open CORE once while online so the service worker can cache the app shell.
+
+IPHONE INSTALLATION
+1. Open CORE in Safari.
+2. Tap Share.
+3. Tap Add to Home Screen.
+4. Launch CORE from the Home Screen icon.
+5. Open Settings → PWA Control Centre → Enable Notifications.
+
+IMPORTANT
+- Installation, offline shell, update checks, preferences, and local test notifications are included.
+- True remote push delivery requires a backend or push provider. The frontend push receiver is already prepared.
+- GitHub Pages must be served over HTTPS, which it normally is.

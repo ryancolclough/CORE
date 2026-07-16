@@ -3,11 +3,12 @@ import { EventBus } from "../sdk/events.js";
 import { Router } from "../sdk/router-v180.js";
 import { ThemeService } from "../sdk/themes.js";
 import { DialogService } from "../sdk/dialogs.js";
+import { PWAService } from "../sdk/pwa.js";
 
 const PLATFORM = {
-  version:"1.8.0-dashboard-rebuild",
-  build:"20260715.181",
-  releaseId:"CORE-DASHBOARD-REBUILD-001",
+  version:"1.9.0-pwa-foundation",
+  build:"20260716.001",
+  releaseId:"CORE-PWA-FOUNDATION-001",
   environment:"Development",
   modules:[]
 };
@@ -26,6 +27,7 @@ const events = new EventBus();
 const router = new Router();
 const themes = new ThemeService(storage);
 const dialogs = new DialogService();
+const pwa = new PWAService(storage, events);
 themes.init();
 
 const state = {
@@ -379,6 +381,7 @@ function initMotionSystem(){
 }
 
 async function boot(){
+  await pwa.init();
   const registry = await fetch("data/module-registry.json?v=20260715.001", {cache:"no-store"}).then(r=>{
     if(!r.ok) throw new Error(`Module registry HTTP ${r.status}`);
     return r.json();
@@ -386,7 +389,7 @@ async function boot(){
   for(const item of registry.filter(x=>x.enabled)){
     const mod = await import(`${item.entry}?v=20260715.001`);
     PLATFORM.modules.push(item);
-    mod.default({router,state,storage,events,themes,dialogs,renderShell,toast,platform:PLATFORM});
+    mod.default({router,state,storage,events,themes,dialogs,pwa,renderShell,toast,platform:PLATFORM});
   }
   if(!router.routes.has("amendments")) router.register("amendments",()=>toast("Amendment module unavailable."));
   if(!router.routes.has("annual")) router.register("annual",()=>toast("Annual Governance Manager unavailable."));

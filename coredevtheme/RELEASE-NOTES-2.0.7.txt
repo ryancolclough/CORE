@@ -1,0 +1,10 @@
+CORE 2.0.7 — AMENDMENT CENTRE
+
+- Rebuilt Amendment Centre to match the approved premium mockup.
+- Added live summary metrics, search, status filters, article filters, and export.
+- Added Create Amendment workflow linked to actual by-law sections.
+- Added editable amendment detail records and workflow states.
+- Added current-vs-proposed wording comparison.
+- Added approved, pending, in-review, published, and superseded states.
+- Added approval/effective dates, motions, movers, seconders, archive, ORE publication, and supersession tracking.
+- Preserved Review Engine linkage and all prior CORE modules.

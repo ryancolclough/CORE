@@ -1,0 +1,8 @@
+CORE 1.8.1 HOTFIX
+
+Fixes Safari loading the cached 1.7 router module.
+The router now loads from sdk/router-v180.js, giving it a new URL and ensuring
+router.start(), browser Back/Forward, refresh-safe routes, and deep links load.
+
+Upload the complete coredevtheme folder and replace the previous one.
+Keep orefinal beside coredevtheme.

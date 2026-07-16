@@ -1,12 +1,12 @@
 import { StorageService } from "../sdk/storage.js";
 import { EventBus } from "../sdk/events.js";
-import { Router } from "../sdk/router.js";
+import { Router } from "../sdk/router-v180.js";
 import { ThemeService } from "../sdk/themes.js";
 import { DialogService } from "../sdk/dialogs.js";
 
 const PLATFORM = {
   version:"1.8.0-dashboard-rebuild",
-  build:"20260715.180",
+  build:"20260715.181",
   releaseId:"CORE-DASHBOARD-REBUILD-001",
   environment:"Development",
   modules:[]

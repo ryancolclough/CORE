@@ -1,0 +1,9 @@
+CORE 2.0.5 — Dashboard & Logo Fix
+
+- Dashboard is now view-only during normal use.
+- Removed widget arrows, resize controls, drag handles, editor dialog, and dashboard workspace button.
+- Workspace Manager is available only through Settings.
+- Added a dedicated Settings panel for role and committee workspace templates.
+- Rebuilt the CORE header wordmark as a transparent PNG to remove the visible rectangular gradient/background.
+- Updated asset query strings and service-worker cache version.
+- Preserved Committee Manager, Meetings, PWA, routing, review records, and existing workspace data.

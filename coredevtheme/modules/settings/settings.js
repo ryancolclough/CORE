@@ -35,6 +35,17 @@ export default function register(ctx){
       </section>
 
       <section class="panel">
+        <div class="panel-head"><div><h2>Workspace Manager</h2><p>Select, apply, and manage role or committee workspace templates.</p></div></div>
+        <div class="settings-diagnostic-launch">
+          <span>
+            <strong>Manage Workspaces & Templates</strong>
+            <small>Choose the active workspace, apply a committee template, or restore the default layout. Dashboard editing controls remain hidden during normal use.</small>
+          </span>
+          <button class="btn" data-route="workspace">Open Workspace Manager</button>
+        </div>
+      </section>
+
+      <section class="panel">
         <div class="panel-head"><div><h2>Install, Offline & Notifications</h2><p>Progressive Web App foundation.</p></div></div>
         <div class="settings-diagnostic-launch">
           <span>

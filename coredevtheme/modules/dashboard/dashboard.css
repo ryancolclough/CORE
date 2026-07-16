@@ -33,3 +33,8 @@
 .snapshot-list{display:grid}.snapshot-list>div{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid rgba(200,164,93,.16)}.snapshot-list>div:last-child{border-bottom:0}.snapshot-list span{color:var(--muted);font-size:13px}.good{color:#6dcf78!important}.warn{color:#e5a746!important}.meeting-readiness{display:grid;gap:9px}.meeting-readiness small{color:var(--muted)}.readiness-row{display:flex;gap:10px;flex-wrap:wrap}.document-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:15px;overflow:hidden}.document-strip>div{padding:14px;border-right:1px solid var(--line)}.document-strip>div:last-child{border-right:0}.document-strip small,.document-strip b{display:block}.document-strip small{color:var(--muted);margin-bottom:6px}
 @media(max-width:980px){.workspace-slot.size-small{grid-column:span 6}.workspace-slot.size-medium,.workspace-slot.size-wide,.workspace-slot.size-large{grid-column:span 12}}
 @media(max-width:620px){.live-workspace{grid-template-columns:1fr;gap:12px}.workspace-slot.size-small,.workspace-slot.size-medium,.workspace-slot.size-wide,.workspace-slot.size-large{grid-column:1}.widget-library-grid{grid-template-columns:1fr}.document-strip{grid-template-columns:repeat(2,1fr)}.document-strip>div:nth-child(2){border-right:0}.document-strip>div:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+
+/* CORE 2.0.5 — dashboard is view-only; workspace management lives in Settings. */
+.workspace-toolbar,.widget-edit-chrome,.edit-help,.widget-sheet{display:none!important}
+.live-workspace .workspace-slot{cursor:default!important;animation:none!important;touch-action:auto!important}
+.live-workspace .workspace-widget{outline:0!important}

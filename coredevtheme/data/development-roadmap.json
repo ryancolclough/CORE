@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 1,
+  "build": "3.0.0",
+  "phase": "Governance Engine",
+  "currentFocus": "Task Engine & Meeting Readiness",
+  "why": "Prepare before the meeting, decide during the meeting, execute after the meeting, and let CORE manage everything in between.",
+  "projects": [
+    {
+      "id": "foundation",
+      "name": "Platform Foundation",
+      "status": "complete",
+      "summary": "Core shell, routing, PWA, offline support, storage, motion and navigation.",
+      "features": [
+        {
+          "id": "router",
+          "title": "Browser history and deep links",
+          "status": "complete",
+          "priority": "critical"
+        },
+        {
+          "id": "pwa",
+          "title": "PWA installation and offline shell",
+          "status": "complete",
+          "priority": "high"
+        },
+        {
+          "id": "motion",
+          "title": "One-time entrance motion system",
+          "status": "complete",
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "id": "committee",
+      "name": "Committee Manager",
+      "status": "building",
+      "summary": "Premium committee workspaces, members, projects, tasks, meetings, documents and activity.",
+      "features": [
+        {
+          "id": "committee-cards",
+          "title": "Premium committee cards",
+          "status": "complete",
+          "priority": "high"
+        },
+        {
+          "id": "committee-tabs",
+          "title": "Functional committee sections",
+          "status": "complete",
+          "priority": "high"
+        },
+        {
+          "id": "project-progress",
+          "title": "Project progress calculated from tasks",
+          "status": "current",
+          "priority": "high"
+        },
+        {
+          "id": "member-profiles",
+          "title": "Member profiles and role assignments",
+          "status": "next",
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "id": "task-engine",
+      "name": "Task Engine",
+      "status": "current",
+      "summary": "One connected action system for committees, projects, meetings, follow-ups and reminders.",
+      "features": [
+        {
+          "id": "task-detail",
+          "title": "Task detail and editing",
+          "status": "current",
+          "priority": "critical",
+          "notes": "Open, edit, complete, reopen, reassign, add notes and preserve history."
+        },
+        {
+          "id": "task-checklists",
+          "title": "Task checklists",
+          "status": "current",
+          "priority": "high"
+        },
+        {
+          "id": "task-project-progress",
+          "title": "Automatic project progress",
+          "status": "next",
+          "priority": "high"
+        },
+        {
+          "id": "task-audit",
+          "title": "Task notes, documents and audit trail",
+          "status": "next",
+          "priority": "high"
+        },
+        {
+          "id": "task-reminders",
+          "title": "PWA due-date reminders and escalation",
+          "status": "planned",
+          "priority": "critical"
+        }
+      ]
+    },
+    {
+      "id": "meeting",
+      "name": "Meeting Lifecycle",
+      "status": "building",
+      "summary": "Committee preparation, readiness, live meeting control, follow-ups, minutes and archive.",
+      "features": [
+        {
+          "id": "meeting-builder",
+          "title": "Meeting and agenda builder",
+          "status": "complete",
+          "priority": "high"
+        },
+        {
+          "id": "live-meeting",
+          "title": "Live Meeting mode",
+          "status": "building",
+          "priority": "critical"
+        },
+        {
+          "id": "field-focus",
+          "title": "Focus-safe meeting inputs",
+          "status": "building",
+          "priority": "critical"
+        },
+        {
+          "id": "standing-responsibilities",
+          "title": "Standing responsibilities per committee",
+          "status": "current",
+          "priority": "critical"
+        },
+        {
+          "id": "readiness",
+          "title": "Meeting readiness and countdown",
+          "status": "current",
+          "priority": "critical"
+        },
+        {
+          "id": "followups",
+          "title": "Unresolved item follow-up workflow",
+          "status": "next",
+          "priority": "critical"
+        },
+        {
+          "id": "finalize",
+          "title": "Finalize, archive and PDF meeting record",
+          "status": "planned",
+          "priority": "high"
+        },
+        {
+          "id": "google-meet",
+          "title": "Google Meet join panel",
+          "status": "planned",
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "id": "amendments",
+      "name": "Amendment Centre",
+      "status": "building",
+      "summary": "Draft, compare, approve, publish and preserve every by-law amendment.",
+      "features": [
+        {
+          "id": "amendment-centre",
+          "title": "Premium Amendment Centre",
+          "status": "complete",
+          "priority": "high"
+        },
+        {
+          "id": "amendment-compare",
+          "title": "Side-by-side wording comparison",
+          "status": "building",
+          "priority": "high"
+        },
+        {
+          "id": "ore-publish",
+          "title": "Publish approved amendments to ORE",
+          "status": "planned",
+          "priority": "critical"
+        },
+        {
+          "id": "amendment-timeline",
+          "title": "Amendment history timeline",
+          "status": "next",
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "id": "automation",
+      "name": "Readiness & Automation",
+      "status": "planned",
+      "summary": "Continuous governance cycles, colour health, countdowns, reminders and escalation.",
+      "features": [
+        {
+          "id": "cycle",
+          "title": "Start next governance cycle at adjournment",
+          "status": "planned",
+          "priority": "critical"
+        },
+        {
+          "id": "health-colours",
+          "title": "Blue/green healthy states and yellow/orange/red attention states",
+          "status": "planned",
+          "priority": "high"
+        },
+        {
+          "id": "role-notifications",
+          "title": "Role-targeted notifications",
+          "status": "planned",
+          "priority": "critical"
+        },
+        {
+          "id": "countdowns",
+          "title": "Meeting and responsibility countdowns",
+          "status": "planned",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "name": "Operations & Inventory",
+      "status": "planned",
+      "summary": "Recurring inspections, key/alarm records, inventory, insurable assets and evidence.",
+      "features": [
+        {
+          "id": "monthly-inspections",
+          "title": "Monthly inspection checklist",
+          "status": "planned",
+          "priority": "high"
+        },
+        {
+          "id": "stair-chair",
+          "title": "Stair chair inspection within building checklist",
+          "status": "planned",
+          "priority": "medium"
+        },
+        {
+          "id": "keys-alarm",
+          "title": "Key and alarm accountability",
+          "status": "planned",
+          "priority": "high"
+        },
+        {
+          "id": "inventory",
+          "title": "Inventory and insurable asset register",
+          "status": "planned",
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "id": "cloud",
+      "name": "Secure Cloud Platform",
+      "status": "future",
+      "summary": "Google sign-in, approved users, Drive records, cloud data and multi-organization scale.",
+      "features": [
+        {
+          "id": "google-login",
+          "title": "Google sign-in and approved-user access",
+          "status": "future",
+          "priority": "critical"
+        },
+        {
+          "id": "drive",
+          "title": "Google Drive document layer",
+          "status": "future",
+          "priority": "high"
+        },
+        {
+          "id": "backend",
+          "title": "Secure backend and shared database",
+          "status": "future",
+          "priority": "critical"
+        },
+        {
+          "id": "multi-org",
+          "title": "Multi-lodge and multi-organization tenancy",
+          "status": "future",
+          "priority": "high"
+        }
+      ]
+    }
+  ],
+  "recentlyCompleted": [
+    "Premium Committee Manager cards",
+    "Action Centre save/edit workflow",
+    "Amendment Centre",
+    "Dashboard workspace controls moved to Settings",
+    "Transparent CORE top-bar branding",
+    "Browser Back and Forward support"
+  ],
+  "decisions": [
+    {
+      "title": "Workspace editing belongs in Settings",
+      "reason": "Normal users should see role- and committee-focused work, not layout controls."
+    },
+    {
+      "title": "Committee work prepares the meeting",
+      "reason": "The Chair and Secretary should not chase reports or reconstruct work during every meeting."
+    },
+    {
+      "title": "Standing Responsibilities differ from Action Items",
+      "reason": "Recurring governance duties continue every cycle, while actions are one-time follow-ups."
+    },
+    {
+      "title": "ORE remains the reader; CORE performs governance",
+      "reason": "CORE reviews and certifies. ORE displays the official document and review dates."
+    }
+  ],
+  "releases": [
+    {
+      "version": "3.0.0",
+      "title": "Development Roadmap",
+      "summary": "CORE Development Committee, visual focus, roadmap, decisions and automatic bundled progress."
+    },
+    {
+      "version": "2.0.7",
+      "title": "Amendment Centre",
+      "summary": "Functional amendment workflow and premium amendment cards."
+    },
+    {
+      "version": "2.0.6",
+      "title": "Action Centre",
+      "summary": "Save, edit, complete, reopen, assign and synchronize actions."
+    },
+    {
+      "version": "2.0.4",
+      "title": "Committee Polish",
+      "summary": "Premium committee cards and CORE branding."
+    }
+  ]
+}

@@ -2,425 +2,181 @@ import { escapeHTML } from "../../sdk/ui.js";
 
 export default function register(ctx){
   const { router, state, renderShell, toast, platform, storage } = ctx;
-  const expectedBuild = "20260713.005";
+  const ROADMAP_URL = `data/development-roadmap.json?v=${platform.build || "300"}`;
 
-  installRuntimeLogging();
-
-  router.register("developer", async () => {
-    renderLoading();
-    try{
-      await renderDeveloper();
-    }catch(error){
-      recordError("developer", error);
-      renderFailure(error);
-    }
-  });
+  router.register("developer", params => renderDevelopment(params.view || "roadmap"));
+  router.register("developer-task", params => renderTask(params.project, params.feature));
 
   document.addEventListener("click", async event => {
-    if(event.target.closest("[data-run-validation]")){
-      await renderDeveloper(true);
-      toast("Platform validation completed.");
+    const tab=event.target.closest("[data-dev-view]");
+    if(tab){ router.go("developer",{view:tab.dataset.devView}); return; }
+    const project=event.target.closest("[data-dev-project]");
+    if(project){ router.go("developer",{view:"roadmap"}); setTimeout(()=>document.getElementById(`dev-project-${project.dataset.devProject}`)?.scrollIntoView({behavior:"smooth",block:"start"}),50); return; }
+    const feature=event.target.closest("[data-dev-feature]");
+    if(feature){ router.go("developer-task",{project:feature.dataset.project,feature:feature.dataset.devFeature}); return; }
+    if(event.target.closest("[data-sync-roadmap]")){ storage.remove("DEV_ROADMAP_CACHE"); await renderDevelopment("roadmap"); toast("Development roadmap synchronized with this build."); return; }
+    if(event.target.closest("[data-dev-back]")){ router.go("developer",{view:"roadmap"}); return; }
+    if(event.target.closest("[data-copy-dev-summary]")){
+      const data=await getRoadmap();
+      const text=summaryText(data);
+      try{ await navigator.clipboard.writeText(text); toast("Roadmap summary copied."); }
+      catch{ download(text,"CORE-development-roadmap.txt"); toast("Roadmap summary downloaded."); }
       return;
-    }
-
-    if(event.target.closest("[data-refresh-core]")){
-      location.reload();
-      return;
-    }
-
-    if(event.target.closest("[data-force-fresh-load]")){
-      const url = new URL(location.href);
-      url.searchParams.set("v", Date.now().toString());
-      location.href = url.toString();
-      return;
-    }
-
-    if(event.target.closest("[data-clear-runtime-errors]")){
-      storage.set("RUNTIME_ERRORS", []);
-      toast("Runtime error log cleared.");
-      await renderDeveloper();
-      return;
-    }
-
-    if(event.target.closest("[data-copy-support-report]")){
-      const report = await buildSupportReport();
-      try{
-        await navigator.clipboard.writeText(report);
-        toast("Support report copied.");
-      }catch(error){
-        downloadText(report, "CORE-support-report.txt");
-        toast("Support report downloaded.");
-      }
-      return;
-    }
-
-    if(event.target.closest("[data-download-support-report]")){
-      downloadText(await buildSupportReport(), "CORE-support-report.txt");
-      toast("Support report downloaded.");
     }
   });
 
-  function installRuntimeLogging(){
-    if(window.__CORE_RUNTIME_LOGGING__) return;
-    window.__CORE_RUNTIME_LOGGING__ = true;
-
-    window.addEventListener("error", event => {
-      recordError("runtime", {
-        message:event.message || "Runtime error",
-        stack:event.error?.stack || "",
-      });
-    });
-
-    window.addEventListener("unhandledrejection", event => {
-      const reason = event.reason;
-      recordError("promise", {
-        message:reason?.message || String(reason || "Unhandled promise rejection"),
-        stack:reason?.stack || "",
-      });
-    });
-  }
-
-  function recordError(module, error){
-    const entries = storage.get("RUNTIME_ERRORS", []);
-    entries.unshift({
-      time:new Date().toISOString(),
-      module,
-      message:String(error?.message || error || "Unknown error"),
-      stack:String(error?.stack || ""),
-    });
-    storage.set("RUNTIME_ERRORS", entries.slice(0, 50));
-  }
-
-  function renderLoading(){
-    renderShell(`
-      <div class="backline"><button data-route="settings">‹ Settings</button></div>
-      <section class="hero">
-        <div class="eyebrow">Developer Mode</div>
-        <h1>Developer & Diagnostics</h1>
-        <p>Loading the isolated diagnostic report…</p>
-        <div class="rule"></div>
-      </section>
-      <section class="panel"><div class="diagnostic-empty">Inspecting modules and local records.</div></section>
-    `, "developer");
-  }
-
-  async function getRegistry(){
-    const response = await fetch(`data/module-registry.json?v=${expectedBuild}`, {
-      cache:"no-store",
-    });
-    if(!response.ok){
-      throw new Error(`Module registry HTTP ${response.status}`);
-    }
-    const value = await response.json();
-    if(!Array.isArray(value)){
-      throw new Error("Module registry is not an array.");
-    }
-    return value;
-  }
-
-  async function snapshot(){
-    const registry = await getRegistry();
-    const enabled = registry.filter(item => item.enabled);
-    const loadedIds = new Set(platform.modules.map(item => item.id));
-    const routeIds = new Set(router.routes.keys());
-    const moduleHealth = enabled.map(item => ({
-      ...item,
-      loaded:loadedIds.has(item.id),
-      routeRegistered:routeIds.has(item.id),
-    }));
-
-    const runtimeErrors = storage.get("RUNTIME_ERRORS", []);
-    const records = {
-      reviews:Object.keys(state.reviews || {}).length,
-      amendments:state.amendmentItems().length,
-      actions:state.actionItems().length,
-      annualTasks:state.annualTasks().length,
-      meetings:storage.get("MEETINGS", []).length,
-    };
-
-    return {
-      registry,
-      enabled,
-      moduleHealth,
-      runtimeErrors,
-      records,
-      generatedAt:new Date().toISOString(),
-      online:navigator.onLine,
-      userAgent:navigator.userAgent,
-    };
-  }
-
-  function validate(data){
-    const checks = [
-      {
-        label:"Module registry loaded",
-        pass:Array.isArray(data.registry) && data.registry.length > 0,
-      },
-      {
-        label:"All enabled modules loaded",
-        pass:data.moduleHealth.every(item => item.loaded),
-      },
-      {
-        label:"All enabled routes registered",
-        pass:data.moduleHealth.every(item => item.routeRegistered),
-      },
-      {
-        label:"ORE article data available",
-        pass:Array.isArray(state.articles) && state.articles.length > 0,
-      },
-      {
-        label:"Review records readable",
-        pass:state.reviews && typeof state.reviews === "object" && !Array.isArray(state.reviews),
-      },
-      {
-        label:"Action records readable",
-        pass:Array.isArray(state.actionItems()),
-      },
-      {
-        label:"Annual task records readable",
-        pass:Array.isArray(state.annualTasks()),
-      },
-      {
-        label:"Browser storage available",
-        pass:storageAvailable(),
-      },
-    ];
-
-    return {
-      checks,
-      passed:checks.filter(check => check.pass).length,
-      total:checks.length,
-      overall:checks.every(check => check.pass) ? "PASS" : "ATTENTION",
-    };
-  }
-
-  async function renderDeveloper(showValidation=false){
-    const data = await snapshot();
-    const validation = validate(data);
-    const loadedCount = data.moduleHealth.filter(item => item.loaded).length;
-    const routedCount = data.moduleHealth.filter(item => item.routeRegistered).length;
-    const health = Math.round(
-      (
-        (loadedCount / Math.max(1, data.enabled.length)) * 55 +
-        (routedCount / Math.max(1, data.enabled.length)) * 25 +
-        (storageAvailable() ? 10 : 0) +
-        (data.runtimeErrors.length === 0 ? 10 : 0)
-      )
-    );
-
-    const moduleRows = data.moduleHealth.map(item => `
-      <div class="module-health-row ${item.loaded && item.routeRegistered ? "loaded" : "attention"}">
-        <span class="module-health-dot"></span>
-        <span>
-          <strong>${escapeHTML(item.name)}</strong>
-          <small>${escapeHTML(item.id)} · v${escapeHTML(item.version)} · route ${item.routeRegistered ? "registered" : "missing"}</small>
-        </span>
-        <b>${item.loaded ? "Loaded" : "Missing"}</b>
-      </div>
-    `).join("");
-
-    const validationRows = validation.checks.map(check => `
-      <div class="validation-row ${check.pass ? "pass" : "fail"}">
-        <span>${check.pass ? "✓" : "!"}</span>
-        <strong>${escapeHTML(check.label)}</strong>
-        <b>${check.pass ? "PASS" : "ATTENTION"}</b>
-      </div>
-    `).join("");
-
-    const errorRows = data.runtimeErrors.length
-      ? data.runtimeErrors.slice(0, 20).map(error => `
-          <article class="runtime-error-row">
-            <strong>${escapeHTML(error.module || "runtime")}</strong>
-            <small>${escapeHTML(error.time || "")}</small>
-            <p>${escapeHTML(error.message || "Unknown error")}</p>
-          </article>
-        `).join("")
-      : `<div class="diagnostic-empty">No runtime errors have been recorded since this module loaded.</div>`;
-
-    const releaseRows = [
-      ["1.6.2","Developer & Diagnostics","Isolated health, validation, support reports, and runtime logging."],
-      ["1.6.1","Annual Governance","Annual obligations, workspaces, evidence, and linked actions."],
-      ["1.5.1","Backup Import","Cross-device backup restore and merge."],
-      ["1.5.0","Action Centre","Temple Board action tracking."],
-      ["1.4.0","Governance Intelligence","Risk scoring and smart meeting agendas."],
-      ["1.3.0","Annual Manager","Annual review queue and cycle planning."],
-      ["1.2.2","Amendment Workflow","Motion, vote, approval, and publication readiness."],
-    ].map(([version,title,summary]) => `
-      <article class="release-row">
-        <span>${version}</span>
-        <div><strong>${escapeHTML(title)}</strong><small>${escapeHTML(summary)}</small></div>
-      </article>
-    `).join("");
-
-    renderShell(`
-      <div class="backline"><button data-route="settings">‹ Settings</button></div>
-
-      <section class="hero">
-        <div class="eyebrow">Developer Mode · Isolated Module</div>
-        <h1>Developer & Diagnostics</h1>
-        <p>This module reads platform health without changing CORE's startup or module loader.</p>
-        <div class="rule"></div>
-      </section>
-
-      <section class="developer-health-card">
-        <div>
-          <span>System Health</span>
-          <strong>${health}%</strong>
-          <small>${loadedCount} of ${data.enabled.length} modules loaded · ${routedCount} routes registered</small>
-        </div>
-        <div class="developer-health-ring" style="--health:${health}"><b>${health}</b></div>
-      </section>
-
-      <section class="diagnostic-grid">
-        <article><span>Platform</span><strong>${escapeHTML(platform.version)}</strong><small>${escapeHTML(platform.releaseId)}</small></article>
-        <article><span>Build</span><strong>${escapeHTML(platform.build)}</strong><small>${escapeHTML(platform.environment)}</small></article>
-        <article><span>Modules</span><strong>${loadedCount} / ${data.enabled.length}</strong><small>loaded successfully</small></article>
-        <article><span>Network</span><strong>${data.online ? "Online" : "Offline"}</strong><small>browser status</small></article>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head"><div><h2>Module Health</h2><p>Registry, loaded modules, and route registration</p></div></div>
-        <div class="panel-body">${moduleRows}</div>
-      </section>
-
-      <section class="diagnostic-columns">
-        <section class="panel">
-          <div class="panel-head"><div><h2>Local Database</h2><p>Records on this browser</p></div></div>
-          <div class="database-list">
-            ${databaseRow("Reviews", data.records.reviews)}
-            ${databaseRow("Amendments", data.records.amendments)}
-            ${databaseRow("Actions", data.records.actions)}
-            ${databaseRow("Annual Tasks", data.records.annualTasks)}
-            ${databaseRow("Meetings", data.records.meetings)}
-            ${databaseRow("Runtime Errors", data.runtimeErrors.length)}
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-head"><div><h2>Platform Validation</h2><p>${validation.passed} of ${validation.total} checks passed</p></div></div>
-          <div class="validation-list">${validationRows}</div>
-          <div class="diagnostic-actions">
-            <button class="btn" data-run-validation>Run Validation</button>
-            <button class="btn secondary" data-refresh-core>Reload CORE</button>
-            <button class="btn secondary" data-force-fresh-load>Force Fresh Load</button>
-          </div>
-        </section>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <div><h2>Runtime Error Log</h2><p>Errors captured after diagnostics initialized</p></div>
-          <button class="btn secondary" data-clear-runtime-errors>Clear Log</button>
-        </div>
-        <div class="panel-body">${errorRows}</div>
-      </section>
-
-      <section class="diagnostic-columns">
-        <section class="panel">
-          <div class="panel-head"><div><h2>Support Report</h2><p>For deployment troubleshooting</p></div></div>
-          <div class="support-body">
-            <p>Copy or download a report containing versions, module health, routes, record counts, validation, and recent runtime errors.</p>
-            <div class="diagnostic-actions">
-              <button class="btn" data-copy-support-report>Copy Report</button>
-              <button class="btn secondary" data-download-support-report>Download Report</button>
-            </div>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-head"><div><h2>Release Centre</h2><p>Development history</p></div></div>
-          <div class="release-list">${releaseRows}</div>
-        </section>
-      </section>
-    `, "developer");
-
-    if(showValidation){
-      document.querySelector(".validation-list")?.scrollIntoView({
-        behavior:"smooth",
-        block:"center",
-      });
-    }
-  }
-
-  function renderFailure(error){
-    renderShell(`
-      <div class="backline"><button data-route="settings">‹ Settings</button></div>
-      <section class="hero">
-        <div class="eyebrow">Diagnostics Module Error</div>
-        <h1>Diagnostics could not finish its report.</h1>
-        <p>${escapeHTML(error?.message || String(error))}</p>
-        <div class="rule"></div>
-      </section>
-      <section class="panel">
-        <div class="diagnostic-actions">
-          <button class="btn" data-refresh-core>Reload CORE</button>
-          <button class="btn secondary" data-force-fresh-load>Force Fresh Load</button>
-        </div>
-      </section>
-    `, "developer");
-  }
-
-  async function buildSupportReport(){
-    const data = await snapshot();
-    const validation = validate(data);
-    return [
-      "CORE Support Report",
-      "===================",
-      `Generated: ${data.generatedAt}`,
-      `Platform: ${platform.version}`,
-      `Build: ${platform.build}`,
-      `Release ID: ${platform.releaseId}`,
-      `Environment: ${platform.environment}`,
-      `Modules: ${data.moduleHealth.filter(item => item.loaded).length}/${data.enabled.length} loaded`,
-      `Routes: ${data.moduleHealth.filter(item => item.routeRegistered).length}/${data.enabled.length} registered`,
-      `Validation: ${validation.overall} (${validation.passed}/${validation.total})`,
-      "",
-      "Module Health",
-      ...data.moduleHealth.map(item =>
-        `- ${item.id} v${item.version}: loaded=${item.loaded}, route=${item.routeRegistered}`
-      ),
-      "",
-      "Local Records",
-      `- Reviews: ${data.records.reviews}`,
-      `- Amendments: ${data.records.amendments}`,
-      `- Actions: ${data.records.actions}`,
-      `- Annual Tasks: ${data.records.annualTasks}`,
-      `- Meetings: ${data.records.meetings}`,
-      "",
-      "Recent Runtime Errors",
-      ...(data.runtimeErrors.length
-        ? data.runtimeErrors.slice(0, 10).map(error =>
-            `- ${error.time} [${error.module}] ${error.message}`
-          )
-        : ["- None recorded"]),
-      "",
-      "Browser",
-      data.userAgent,
-    ].join("\n");
-  }
-
-  function storageAvailable(){
+  async function getRoadmap(){
+    const cached=storage.get("DEV_ROADMAP_CACHE",null);
     try{
-      const key = "__CORE_DIAGNOSTIC_TEST__";
-      localStorage.setItem(key, "1");
-      localStorage.removeItem(key);
-      return true;
+      const response=await fetch(ROADMAP_URL,{cache:"no-store"});
+      if(!response.ok) throw new Error(`Roadmap HTTP ${response.status}`);
+      const data=await response.json();
+      storage.set("DEV_ROADMAP_CACHE",data);
+      return data;
     }catch(error){
-      return false;
+      if(cached) return cached;
+      throw error;
     }
   }
 
-  function databaseRow(label, value){
-    return `<div class="database-row"><span>${escapeHTML(label)}</span><strong>${value}</strong></div>`;
+  function allFeatures(data){ return data.projects.flatMap(project=>project.features.map(feature=>({...feature,projectId:project.id,projectName:project.name}))); }
+  function isDone(status){ return status==="complete" || status==="released"; }
+  function percent(features){ return features.length ? Math.round(features.filter(f=>isDone(f.status)).length/features.length*100) : 0; }
+  function statusLabel(status){ return ({complete:"Complete",released:"Released",building:"Building",current:"Current Focus",next:"Next Up",planned:"Planned",future:"Future"})[status] || title(status); }
+  function statusClass(status){ return String(status||"planned").replace(/[^a-z-]/g,""); }
+
+  async function renderDevelopment(view="roadmap"){
+    try{
+      const data=await getRoadmap();
+      const features=allFeatures(data);
+      const completed=features.filter(f=>isDone(f.status)).length;
+      const active=features.filter(f=>["current","building"].includes(f.status)).length;
+      const overall=percent(features);
+      const current=features.filter(f=>f.status==="current");
+      const next=features.filter(f=>f.status==="next");
+
+      renderShell(`
+        <div class="backline"><button type="button" data-route="settings">‹ Settings</button></div>
+        <section class="dev-hero glass-card">
+          <div>
+            <div class="eyebrow">CORE Development Committee · Build ${escapeHTML(data.build)}</div>
+            <h1>Where we are. What we are building. What comes next.</h1>
+            <p>${escapeHTML(data.why)}</p>
+          </div>
+          <div class="dev-overall-ring" style="--score:${overall}"><div><strong>${overall}%</strong><small>Mapped</small></div></div>
+        </section>
+
+        <nav class="dev-tabs" aria-label="Development sections">
+          ${["roadmap","projects","decisions","releases","diagnostics"].map(item=>`<button type="button" class="${view===item?'active':''}" data-dev-view="${item}">${title(item)}</button>`).join("")}
+        </nav>
+
+        ${view==="roadmap" ? roadmapView(data,current,next,completed,active,features.length,overall) : ""}
+        ${view==="projects" ? projectsView(data) : ""}
+        ${view==="decisions" ? decisionsView(data) : ""}
+        ${view==="releases" ? releasesView(data) : ""}
+        ${view==="diagnostics" ? diagnosticsView(data) : ""}
+      `,"developer");
+    }catch(error){
+      renderShell(`<section class="hero"><div class="eyebrow">Development Roadmap</div><h1>Roadmap unavailable</h1><p>${escapeHTML(error.message||String(error))}</p></section>`,"developer");
+    }
   }
 
-  function downloadText(text, filename){
-    const blob = new Blob([text], {type:"text/plain"});
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = filename;
-    anchor.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  function roadmapView(data,current,next,completed,active,total,overall){
+    return `
+      <section class="dev-metrics">
+        ${metric("Current Phase",data.phase,"Build 3.0")}
+        ${metric("Completed",completed,`${total} mapped features`)}
+        ${metric("Active",active,"Building now")}
+        ${metric("Overall",`${overall}%`,"Visual roadmap")}
+      </section>
+
+      <section class="dev-focus-grid">
+        <article class="glass-card dev-focus-card primary">
+          <span>Current Focus</span><h2>${escapeHTML(data.currentFocus)}</h2>
+          <p>These are the specific items we are discussing and building now.</p>
+          <div class="dev-feature-list">${current.map(featureRow).join("") || empty("No current-focus items in this build.")}</div>
+        </article>
+        <article class="glass-card dev-focus-card">
+          <span>Next Up</span><h2>After the current focus</h2>
+          <p>Visible enough to keep direction, without burying the current work.</p>
+          <div class="dev-feature-list">${next.map(featureRow).join("") || empty("Next items will appear with the next release plan.")}</div>
+        </article>
+      </section>
+
+      <section class="panel dev-recent">
+        <div class="panel-head"><div><h2>Recently Completed</h2><p>Proof of momentum</p></div><button class="btn secondary" type="button" data-sync-roadmap>Sync This Build</button></div>
+        <div class="dev-completed-grid">${data.recentlyCompleted.map(item=>`<div><span>✓</span><strong>${escapeHTML(item)}</strong></div>`).join("")}</div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><div><h2>Project Map</h2><p>Each project calculates progress from the features beneath it.</p></div><button class="btn secondary" type="button" data-copy-dev-summary>Copy Summary</button></div>
+        <div class="dev-project-grid">${data.projects.map(projectCard).join("")}</div>
+      </section>
+    `;
   }
+
+  function projectsView(data){ return `<section class="dev-project-stack">${data.projects.map(projectDetail).join("")}</section>`; }
+  function decisionsView(data){ return `<section class="panel"><div class="panel-head"><div><h2>Design Decisions</h2><p>The reason behind important choices.</p></div></div><div class="dev-decision-list">${data.decisions.map((d,i)=>`<article><span>${String(i+1).padStart(2,'0')}</span><div><h3>${escapeHTML(d.title)}</h3><p>${escapeHTML(d.reason)}</p></div></article>`).join("")}</div></section>`; }
+  function releasesView(data){ return `<section class="panel"><div class="panel-head"><div><h2>Release Journal</h2><p>Bundled automatically with each build.</p></div></div><div class="dev-release-list">${data.releases.map(r=>`<article><b>${escapeHTML(r.version)}</b><div><h3>${escapeHTML(r.title)}</h3><p>${escapeHTML(r.summary)}</p></div></article>`).join("")}</div></section>`; }
+  function diagnosticsView(data){
+    const committees=storage.get("COMMITTEES",[]);
+    const rows=[
+      ["Platform Version",platform.version],["Build",platform.build],["Environment",platform.environment],["Roadmap Build",data.build],
+      ["Committees",Array.isArray(committees)?committees.length:0],["Reviews",Object.keys(state.reviews||{}).length],["Actions",state.actionItems().length],["Meetings",storage.get("MEETINGS",[]).length]
+    ];
+    return `<section class="panel"><div class="panel-head"><div><h2>Developer Diagnostics</h2><p>Quick health facts without distracting from the roadmap.</p></div></div><div class="dev-diagnostic-grid">${rows.map(([a,b])=>`<article><span>${escapeHTML(a)}</span><strong>${escapeHTML(String(b))}</strong></article>`).join("")}</div></section>`;
+  }
+
+  function projectCard(project){
+    const score=percent(project.features);
+    const current=project.features.filter(f=>["current","building"].includes(f.status)).length;
+    return `<button type="button" class="dev-project-card glass-card" data-dev-project="${project.id}">
+      <div class="dev-project-head"><span class="dev-status ${statusClass(project.status)}">${statusLabel(project.status)}</span><b>${score}%</b></div>
+      <h3>${escapeHTML(project.name)}</h3><p>${escapeHTML(project.summary)}</p>
+      <div class="dev-progress"><span style="width:${score}%"></span></div>
+      <footer><span>${project.features.length} features</span><span>${current} active</span><b>Open →</b></footer>
+    </button>`;
+  }
+
+  function projectDetail(project){
+    const score=percent(project.features);
+    return `<section class="glass-card dev-project-detail" id="dev-project-${project.id}">
+      <header><div><span class="dev-status ${statusClass(project.status)}">${statusLabel(project.status)}</span><h2>${escapeHTML(project.name)}</h2><p>${escapeHTML(project.summary)}</p></div><div class="dev-project-score"><strong>${score}%</strong><small>${project.features.filter(f=>isDone(f.status)).length}/${project.features.length} complete</small></div></header>
+      <div class="dev-progress"><span style="width:${score}%"></span></div>
+      <div class="dev-feature-cards">${project.features.map(f=>featureRow({...f,projectId:project.id,projectName:project.name})).join("")}</div>
+    </section>`;
+  }
+
+  function featureRow(feature){
+    return `<button type="button" class="dev-feature-row" data-project="${feature.projectId}" data-dev-feature="${feature.id}">
+      <span class="dev-feature-state ${statusClass(feature.status)}">${isDone(feature.status)?'✓':'•'}</span>
+      <span><strong>${escapeHTML(feature.title)}</strong><small>${escapeHTML(feature.projectName||"")} · ${statusLabel(feature.status)}</small></span>
+      <b class="priority ${feature.priority||'medium'}">${title(feature.priority||'medium')}</b>
+    </button>`;
+  }
+
+  async function renderTask(projectId,featureId){
+    const data=await getRoadmap();
+    const project=data.projects.find(p=>p.id===projectId);
+    const feature=project?.features.find(f=>f.id===featureId);
+    if(!project||!feature){ router.go("developer",{view:"roadmap"}); return; }
+    renderShell(`
+      <div class="backline"><button type="button" data-dev-back>‹ Development Roadmap</button></div>
+      <section class="dev-task-hero glass-card">
+        <div><span class="dev-status ${statusClass(feature.status)}">${statusLabel(feature.status)}</span><div class="eyebrow">${escapeHTML(project.name)}</div><h1>${escapeHTML(feature.title)}</h1><p>${escapeHTML(feature.notes||project.summary)}</p></div>
+        <b class="priority ${feature.priority||'medium'}">${title(feature.priority||'medium')} Priority</b>
+      </section>
+      <section class="dev-task-grid">
+        <article class="glass-card"><span>Where we are</span><h2>${statusLabel(feature.status)}</h2><p>This status is bundled with the installed CORE build so the roadmap updates with each release.</p></article>
+        <article class="glass-card"><span>Why it matters</span><h2>${escapeHTML(project.name)}</h2><p>${escapeHTML(project.summary)}</p></article>
+        <article class="glass-card wide"><span>Development Notes</span><h2>Working definition</h2><p>${escapeHTML(feature.notes||"This feature is mapped and will receive detailed implementation notes as development proceeds.")}</p></article>
+      </section>
+    `,"developer");
+  }
+
+  function metric(label,value,copy){ return `<article class="glass-card"><span>${escapeHTML(label)}</span><strong>${escapeHTML(String(value))}</strong><small>${escapeHTML(copy)}</small></article>`; }
+  function empty(text){ return `<div class="dev-empty">${escapeHTML(text)}</div>`; }
+  function title(value){ return String(value||"").replaceAll("-"," ").replace(/\b\w/g,c=>c.toUpperCase()); }
+  function summaryText(data){ return [`CORE Development Committee — Build ${data.build}`,`Current Phase: ${data.phase}`,`Current Focus: ${data.currentFocus}`,"",...data.projects.map(p=>`${p.name}: ${percent(p.features)}% (${p.features.filter(f=>isDone(f.status)).length}/${p.features.length})`) ].join("\n"); }
+  function download(text,name){ const blob=new Blob([text],{type:"text/plain"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),500); }
 }

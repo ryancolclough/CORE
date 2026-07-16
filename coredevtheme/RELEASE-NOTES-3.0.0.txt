@@ -1,0 +1,13 @@
+CORE 3.0.0 — DEVELOPMENT ROADMAP
+
+Added:
+- CORE Development Committee automatically added to existing committee data.
+- Visual Development Roadmap under Settings.
+- Current Focus, Next Up, Recently Completed and Project Map.
+- Project progress calculated from bundled feature statuses.
+- Feature detail pages with why/where/notes.
+- Design Decisions and Release Journal.
+- Sync This Build refreshes bundled roadmap data.
+- Diagnostics preserved as a dedicated tab.
+
+This roadmap is a visual guide for Ryan and the assistant-led development process. It is not intended to add manual project-management overhead. Future builds update development-roadmap.json automatically.

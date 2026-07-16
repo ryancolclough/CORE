@@ -28,6 +28,32 @@ const seed = [
       { title: "Committee workspace created", date: "2026-07-16" }
     ]
   },
+
+  {
+    id: "core-development",
+    name: "CORE Development Committee",
+    purpose: "Keep the CORE roadmap visible: current focus, what comes next, completed work, and product decisions.",
+    chair: "Ryan Colclough",
+    status: "on-track",
+    progress: 32,
+    nextMeeting: "",
+    members: [{ name: "Ryan Colclough", role: "Chair / Administrator" }],
+    responsibilities: [
+      "Keep the current development focus visible.",
+      "Preserve product decisions and release history.",
+      "Use CORE as a visual guide without slowing development."
+    ],
+    tasks: [
+      { title: "Build Task Engine", status: "in-progress", due: "" },
+      { title: "Build meeting readiness cycle", status: "not-started", due: "" },
+      { title: "Connect PWA reminders to assigned responsibilities", status: "not-started", due: "" }
+    ],
+    projects: [
+      { name: "CORE Governance Engine", progress: 32, status: "active" }
+    ],
+    documents: [],
+    activity: [{ title: "Development roadmap activated in CORE 3.0", date: "2026-07-16" }]
+  },
   {
     id: "finance",
     name: "Finance Committee",
@@ -472,7 +498,10 @@ export default function register(ctx) {
 }
 
 function normalize(items) {
-  return (Array.isArray(items) ? items : seed).map(item => ({
+  const source = Array.isArray(items) ? [...items] : [...seed];
+  const development = seed.find(item => item.id === "core-development");
+  if (development && !source.some(item => item.id === "core-development")) source.push(development);
+  return source.map(item => ({
     ...item,
     members: Array.isArray(item.members) ? item.members : [],
     responsibilities: Array.isArray(item.responsibilities) ? item.responsibilities : [],

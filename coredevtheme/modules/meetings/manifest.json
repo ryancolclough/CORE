@@ -1,0 +1,7 @@
+{
+  "id": "meetings",
+  "name": "Meeting Manager",
+  "version": "0.1.0",
+  "entry": "../modules/meetings/meetings.js",
+  "enabled": true
+}

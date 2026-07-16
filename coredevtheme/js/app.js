@@ -6,9 +6,9 @@ import { DialogService } from "../sdk/dialogs.js";
 import { PWAService } from "../sdk/pwa.js";
 
 const PLATFORM = {
-  version:"2.0.0-committee-workspace",
-  build:"20260716.200",
-  releaseId:"CORE-COMMITTEE-WORKSPACE-200",
+  version:"2.0.2-workspace-meeting-test",
+  build:"20260716.202",
+  releaseId:"CORE-WORKSPACE-MEETING-202",
   environment:"Development",
   modules:[]
 };
@@ -314,7 +314,7 @@ function renderShell(content,active="dashboard"){
             <small>Compliance &amp; Organizational Resource Engine</small>
           </span>
         </button>
-        <div class="top-actions"><button class="icon-btn" data-route="workspace" title="Customize workspace">▦</button><button class="icon-btn" data-route="committees" title="Committee Manager">♙</button><button class="icon-btn" data-route="settings">⚙</button></div>
+        <div class="top-actions"><button class="icon-btn" data-route="workspace" title="Workspace templates">▦</button><button class="icon-btn" data-route="meetings" title="Meeting Manager">◷</button><button class="icon-btn" data-route="committees" title="Committee Manager">♙</button><button class="icon-btn" data-route="settings">⚙</button></div>
       </header>
       <main class="main">${content}</main>
       <div class="version-stamp">CORE Platform ${PLATFORM.version} · Build ${PLATFORM.build}</div>
@@ -384,12 +384,12 @@ function initMotionSystem(){
 
 async function boot(){
   await pwa.init();
-  const registry = await fetch("data/module-registry.json?v=20260716.200", {cache:"no-store"}).then(r=>{
+  const registry = await fetch("data/module-registry.json?v=20260716.202", {cache:"no-store"}).then(r=>{
     if(!r.ok) throw new Error(`Module registry HTTP ${r.status}`);
     return r.json();
   });
   for(const item of registry.filter(x=>x.enabled)){
-    const mod = await import(`${item.entry}?v=20260716.200`);
+    const mod = await import(`${item.entry}?v=20260716.202`);
     PLATFORM.modules.push(item);
     mod.default({router,state,storage,events,themes,dialogs,pwa,renderShell,toast,platform:PLATFORM});
   }

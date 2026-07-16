@@ -1,0 +1,19 @@
+CORE 2.0.1 — Committee Stabilization & Polish
+
+FIXED
+- Committee cards no longer concatenate labels and values.
+- Member, task, project, and meeting rows now have proper responsive spacing.
+- Committee tab buttons now switch to real section views.
+- Schedule Meeting now stores a meeting date.
+- Responsibilities can now be added and viewed.
+- Documents can now be recorded and viewed.
+- Activity history now records committee changes.
+- Mobile tabs no longer render like oversized default browser controls.
+- Development banner and header now respect iPhone safe-area spacing.
+- Desktop committee cards now use the available width more effectively.
+
+PRESERVED
+- PWA installation and offline shell.
+- Browser Back and Forward support.
+- Workspace customization foundation.
+- Review interaction patch.

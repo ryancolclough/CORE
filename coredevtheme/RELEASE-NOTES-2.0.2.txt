@@ -1,0 +1,16 @@
+CORE 2.0.2 — Workspace + Meeting Test Build
+
+TEST TARGETS
+1. Dashboard > Customize Workspace enters live edit mode.
+2. Drag cards directly on desktop and mobile.
+3. Resize, remove, add, and reset widgets.
+4. Refresh and confirm layout persists.
+5. Workspace Templates applies committee-specific starting layouts.
+6. Meeting Manager opens from Quick Actions/top bar.
+7. File committee reports, add agenda items, enter Live Meeting mode.
+8. Record discussion, motion, mover, seconder, decision, Complete & Next.
+9. Confirm Review form controls remain isolated from Articles navigation.
+10. Reinstall Home Screen icon to see the new CORE icon.
+
+NOTE
+Existing installed PWA icons can remain cached by iOS. Remove the old Home Screen icon and add CORE again after deployment.

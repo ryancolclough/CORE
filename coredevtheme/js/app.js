@@ -5,9 +5,9 @@ import { ThemeService } from "../sdk/themes.js";
 import { DialogService } from "../sdk/dialogs.js";
 
 const PLATFORM = {
-  version:"1.7.2-theme-lab",
-  build:"20260715.001",
-  releaseId:"CORE-THEME-LAB-003",
+  version:"1.8.0-dashboard-rebuild",
+  build:"20260715.180",
+  releaseId:"CORE-DASHBOARD-REBUILD-001",
   environment:"Development",
   modules:[]
 };
@@ -335,7 +335,7 @@ function initMotionSystem(){
   const color=p=>`hsl(${Math.round(clamp(p,0,100)*1.2)} 72% 52%)`;
   const animateNumber=(el,target,suffix="")=>{
     if(el.dataset.animated)return;el.dataset.animated="1";
-    if(!allow()||root.dataset.progressAnimation==="off"){el.textContent=`${target}${suffix}`;return;}
+    if(!allow()){el.textContent=`${target}${suffix}`;return;}
     const start=performance.now();
     const step=now=>{const t=clamp((now-start)/900,0,1),e=1-Math.pow(1-t,3);el.textContent=`${Math.round(target*e)}${suffix}`;if(t<1)requestAnimationFrame(step)};
     requestAnimationFrame(step);
@@ -345,13 +345,37 @@ function initMotionSystem(){
     el.style.setProperty("--progress",p);el.style.setProperty("--progress-color",color(p));
     requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add("is-progress-complete")));
   };
-  const reveal=el=>{el.classList.add("is-visible");el.querySelectorAll("[data-count-to]").forEach(n=>animateNumber(n,Number(n.dataset.countTo)||0,n.dataset.countSuffix||""));el.querySelectorAll("[data-progress-value]").forEach(progress)};
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){reveal(e.target);io.unobserve(e.target)}}),{threshold:.12,rootMargin:"0px 0px -7% 0px"});
-  const decorate=()=>document.querySelectorAll(".summary-card,.panel,.module-link,.cinematic-health,.health-card,.annual-launch-card,.intelligence-launch-card,.system-health-card,.developer-health-card").forEach((c,i)=>{if(c.dataset.motionDecorated)return;c.dataset.motionDecorated="1";c.classList.add("motion-card");c.style.setProperty("--motion-index",i%10);c.insertAdjacentHTML("beforeend",'<span class="glass-shine" aria-hidden="true"></span>');io.observe(c)});
-  new MutationObserver(()=>requestAnimationFrame(decorate)).observe(document.querySelector("#app")||document.body,{childList:true,subtree:true});
+  const shineCard=(card,delay=0)=>setTimeout(()=>{if(!allow()||!card.isConnected)return;card.classList.add("shine-active");setTimeout(()=>card.classList.remove("shine-active"),1350)},delay);
+  let lastScrollY=window.scrollY;
+  const io=new IntersectionObserver(entries=>entries.forEach(entry=>{
+    const el=entry.target;
+    if(entry.isIntersecting){
+      const returning=el.dataset.seen==="1";
+      el.classList.add("is-visible");
+      if(returning&&window.scrollY<lastScrollY){el.classList.add("scroll-return");setTimeout(()=>el.classList.remove("scroll-return"),650)}
+      el.dataset.seen="1";
+      el.querySelectorAll("[data-count-to]").forEach(n=>animateNumber(n,Number(n.dataset.countTo)||0,n.dataset.countSuffix||""));
+      el.querySelectorAll("[data-progress-value]").forEach(progress);
+      shineCard(el,420+(Number(el.style.getPropertyValue("--motion-index"))||0)*120);
+    }else if(el.dataset.seen==="1"){el.classList.remove("is-visible")}
+  }),{threshold:.12,rootMargin:"0px 0px -6% 0px"});
+  window.addEventListener("scroll",()=>{lastScrollY=window.scrollY},{passive:true});
+  const selectors=".glass-card,.summary-card,.panel,.module-link,.cinematic-health,.health-card,.annual-launch-card,.intelligence-launch-card,.system-health-card,.developer-health-card";
+  const decorate=()=>document.querySelectorAll(selectors).forEach((card,index)=>{
+    if(card.dataset.motionDecorated)return;
+    card.dataset.motionDecorated="1";card.classList.add("motion-card");card.style.setProperty("--motion-index",index%12);
+    card.insertAdjacentHTML("beforeend",'<span class="glass-shine" aria-hidden="true"></span>');io.observe(card);
+  });
+  new MutationObserver(()=>requestAnimationFrame(decorate)).observe(document.body,{childList:true,subtree:true});
   decorate();
-  const shine=()=>{if(allow()&&root.dataset.reflection!=="off"){const cards=[...document.querySelectorAll(".motion-card.is-visible")];if(cards.length){const c=cards[Math.floor(Math.random()*cards.length)];c.classList.add("shine-active");setTimeout(()=>c.classList.remove("shine-active"),1800)}}setTimeout(shine,(root.dataset.reflection==="normal"?18000:28000)+Math.random()*16000)};
-  setTimeout(shine,7000);
+  const periodicSequence=()=>{
+    if(allow()&&document.visibilityState==="visible"){
+      const cards=[...document.querySelectorAll(".motion-card.is-visible")].slice(0,10);
+      cards.forEach((card,index)=>shineCard(card,index*380));
+    }
+    setTimeout(periodicSequence,16000+Math.random()*5000);
+  };
+  setTimeout(periodicSequence,9000);
 }
 
 async function boot(){
@@ -368,13 +392,13 @@ async function boot(){
   if(!router.routes.has("annual")) router.register("annual",()=>toast("Annual Governance Manager unavailable."));
   if(!router.routes.has("intelligence")) router.register("intelligence",()=>toast("Governance Intelligence unavailable."));
   if(!router.routes.has("actions")) router.register("actions",()=>toast("Action Centre unavailable."));
-  router.go("dashboard");
+  router.start("dashboard");
   initMotionSystem();
 }
 
 document.addEventListener("click",e=>{
   const r=e.target.closest("[data-route]")?.dataset.route;
-  if(r){ try{router.go(r)}catch(err){console.error(err);toast("Module route unavailable.");} }
+  if(r){ e.preventDefault(); try{router.go(r)}catch(err){console.error(err);toast("Module route unavailable.");} }
   if(e.target.closest("[data-close-modal]")||e.target.id==="core-modal") dialogs.close();
 });
 

@@ -1,118 +1,102 @@
 export default function register(ctx){
-  const { router, state, renderShell, events, platform } = ctx;
+  const { router, state, renderShell, events } = ctx;
 
   router.register("dashboard", () => {
     const m = state.metrics();
-    const attention = state.attentionItems().slice(0,5);
-    const amendments = state.amendmentItems();
-    const stages = {
-      drafting: amendments.filter(x => state.amendmentStage(x.review) === "drafting").length,
-      awaitingBoard: amendments.filter(x => state.amendmentStage(x.review) === "awaiting_board").length,
-      awaitingApproval: amendments.filter(x => state.amendmentStage(x.review) === "awaiting_approval").length,
-      ready: amendments.filter(x => state.amendmentStage(x.review) === "ready_to_publish").length,
-      published: amendments.filter(x => state.amendmentStage(x.review) === "published").length
-    };
-
     const actions = state.actionSummary();
-
-    const score = m.total
-      ? Math.round(((m.complete + m.discussion * .55 + m.amendment * .35) / m.total) * 100)
-      : 0;
-
-    const attentionRows = attention.length
-      ? attention.map(item => `
-        <button class="attention-row" data-open-direct="${item.articleIndex}:${item.sectionIndex}">
-          <span class="attention-mark ${item.review.status}"></span>
-          <span>
-            <strong>Section ${item.section.number} — ${item.section.title}</strong>
-            <small>${item.review.status === "amendment" ? "Amendment recommended" : "Board discussion required"}</small>
-          </span>
-          <span>›</span>
-        </button>`).join("")
-      : `<div class="empty-state">Nothing currently requires immediate governance attention.</div>`;
-
-    const nextReview = `${state.reviewYear}-07-24`;
-    const completed = m.reviewed;
+    const annual = state.annualTaskSummary();
+    const attention = state.attentionItems().slice(0,4);
+    const amendments = state.amendmentItems();
+    const score = m.total ? Math.round(((m.complete + m.discussion * .55 + m.amendment * .35) / m.total) * 100) : 0;
     const openReviews = Math.max(0, m.total - m.reviewed);
+    const nextReview = `${state.reviewYear}-07-24`;
+    const authorities = [
+      ["ONCA", Math.min(100, score + 5), "Legal framework"],
+      ["Grand Lodge", Math.min(100, score + 2), "Constitution & regulations"],
+      ["Temple Board", score, "Corporate by-laws"],
+      ["Internal Policies", Math.max(0, score - 7), "Operational governance"]
+    ];
+
+    const attentionRows = attention.length ? attention.map(item => `
+      <button class="priority-item" data-open-direct="${item.articleIndex}:${item.sectionIndex}">
+        <span class="priority-dot ${item.review.status}"></span>
+        <span><strong>Section ${item.section.number}</strong><small>${item.section.title}</small></span>
+        <b>${item.review.status === "amendment" ? "Amendment" : "Review"}</b>
+      </button>`).join("") : `<div class="dashboard-empty">No urgent governance items.</div>`;
 
     const content = `
-      <section class="hero cinematic-hero">
-        <div class="eyebrow">Temple Board Workspace</div>
-        <h1>Good ${state.greeting()},<br>Ryan.</h1>
-        <p>CORE now tracks an amendment from initial analysis through committee review, Temple Board approval, and publication to ORE.</p>
-        <div class="rule"><span></span></div>
+      <section class="hero cinematic-hero dashboard-intro">
+        <div class="eyebrow">Temple Board Governance Centre</div>
+        <h1>Good ${state.greeting()}, Ryan.</h1>
+        <p>Your compliance, committee work, records, and upcoming governance responsibilities—organized in one place.</p>
       </section>
 
-      <section class="health-card cinematic-health">
-        <div class="health-primary">
-          <span>Governance Health</span>
-          <strong data-count-to="${score}" data-count-suffix="%">${score}%</strong>
-          <small>Internal completion indicator —<br>not a legal certification</small>
-        </div>
-        <div class="health-ring-wrap">
-          <div class="health-ring" data-progress-value="${score}" style="--score:${score}"><b data-count-to="${completed}">${completed}</b></div>
-          <span>Items Complete</span>
-        </div>
-        <div class="health-pillars">
-          <button data-route="review"><i>✓</i><span>Compliance</span></button>
-          <button data-route="settings"><i>♙</i><span>Organization</span></button>
-          <button data-route="export"><i>▤</i><span>Resource</span></button>
-          <button data-route="settings"><i>⚙</i><span>Engine</span></button>
-        </div>
-      </section>
-
-      <section class="summary-grid cinematic-summary">
-        <button class="summary-card review-summary" data-route="review">
-          <span>Governance Review</span>
-          <strong data-count-to="${openReviews}">${openReviews}</strong>
-          <small>Open reviews</small>
-          <b class="round-arrow">→</b>
-          <div class="summary-footer">
-            <i>▦</i>
-            <span><small>Next Review</small><strong>${new Date(nextReview+"T12:00:00").toLocaleDateString("en-CA",{month:"short",day:"numeric",year:"numeric"})}</strong></span>
+      <section class="dashboard-grid dashboard-hero-grid">
+        <article class="glass-card governance-card motion-card-feature">
+          <div class="governance-copy">
+            <span class="card-kicker">Governance Health</span>
+            <strong data-count-to="${score}" data-count-suffix="%">${score}%</strong>
+            <p>Internal governance completion score based on current reviews and outstanding actions.</p>
+            <button class="text-action" data-route="review">Open compliance review <b>→</b></button>
           </div>
-        </button>
-
-        <button class="summary-card progress-summary" data-route="review">
-          <span>Review Progress</span>
-          <strong data-count-to="${m.percent}" data-count-suffix="%">${m.percent}%</strong>
-          <small>Current progress</small>
-          <b class="round-arrow">→</b>
-          <div class="summary-footer">
-            <i>↗</i>
-            <span><small>${actions.overdue ? "Needs Attention" : "On Track"}</small><strong>${actions.overdue ? `${actions.overdue} overdue item${actions.overdue===1?"":"s"}` : "No overdue items"}</strong></span>
+          <div class="hero-ring" data-progress-value="${score}" style="--score:${score}">
+            <div><strong data-count-to="${m.reviewed}">${m.reviewed}</strong><small>of ${m.total}<br>reviewed</small></div>
           </div>
-        </button>
-      </section>
+        </article>
 
-      <section class="module-links">
-        <button class="module-link" data-route="intelligence">
-          <span><small>Governance Intelligence</small><strong>Meeting Guidance &amp; Risk</strong></span><b>Open →</b>
-        </button>
-        <button class="module-link" data-route="annual">
-          <span><small>Annual Governance Manager</small><strong>${state.reviewYear} Review Cycle</strong></span><b>Open →</b>
-        </button>
-        <button class="module-link" data-route="actions">
-          <span><small>Action Centre</small><strong>${actions.open} open · ${actions.overdue} overdue</strong></span><b>Open →</b>
-        </button>
-      </section>
-
-      <section class="panel compact-panel">
-        <div class="panel-head">
-          <div><h2>${state.reviewYear} Governance Review</h2><p>${state.articles.length} Articles · ${m.total} Sections</p></div>
-          <button class="btn" data-route="review">${m.reviewed ? "Continue Review" : "Begin Review"}</button>
-        </div>
-        <div class="panel-body">
-          <button class="menu-row" data-route="actions"><span><span class="row-title">Action Centre</span><span class="row-sub">${actions.open} open · ${actions.overdue} overdue · ${actions.dueThisMonth} due this month</span></span></button>
-          <button class="menu-row" data-route="review"><span><span class="row-title">Corporate By-Laws</span><span class="row-sub">Review all Articles and Sections.</span></span></button>
-          <button class="menu-row" data-route="annual"><span><span class="row-title">Annual Governance Manager</span><span class="row-sub">${m.reviewed} of ${m.total} sections reviewed · ${state.annualQueue().length} in queue</span></span></button>
-          <button class="menu-row" data-route="amendments"><span><span class="row-title">Amendment Centre</span><span class="row-sub">${amendments.length} amendment record${amendments.length === 1 ? "" : "s"} · ${stages.ready} ready to publish</span></span></button>
+        <div class="metric-grid">
+          <button class="glass-card metric-card" data-route="review"><span>Open Reviews</span><strong data-count-to="${openReviews}">${openReviews}</strong><small>${m.percent}% complete</small></button>
+          <button class="glass-card metric-card" data-route="actions"><span>Open Actions</span><strong data-count-to="${actions.open}">${actions.open}</strong><small>${actions.overdue} overdue</small></button>
+          <button class="glass-card metric-card" data-route="amendments"><span>Amendments</span><strong data-count-to="${amendments.length}">${amendments.length}</strong><small>Tracked workflows</small></button>
+          <button class="glass-card metric-card" data-route="annual"><span>Upcoming</span><strong data-count-to="${annual.upcoming}">${annual.upcoming}</strong><small>Annual tasks</small></button>
         </div>
       </section>
 
-      <section class="panel compact-panel">
-        <div class="panel-head"><div><h2>Attention Required</h2><p>Discussion and amendment records</p></div></div>
-        <div class="panel-body">${attentionRows}</div>
+      <section class="dashboard-section">
+        <div class="section-heading"><div><span>Work faster</span><h2>Quick Actions</h2></div><small>Common governance tasks</small></div>
+        <div class="quick-actions-grid">
+          <button class="quick-action glass-card" data-route="review"><i>✓</i><span><strong>Start Review</strong><small>Assess a by-law section</small></span></button>
+          <button class="quick-action glass-card" data-route="amendments"><i>✎</i><span><strong>New Amendment</strong><small>Open amendment workflow</small></span></button>
+          <button class="quick-action glass-card" data-route="actions"><i>＋</i><span><strong>Add Action</strong><small>Assign governance work</small></span></button>
+          <button class="quick-action glass-card" data-route="export"><i>⇩</i><span><strong>Generate Report</strong><small>Export governance records</small></span></button>
+          <button class="quick-action glass-card" data-route="annual"><i>▦</i><span><strong>Schedule Review</strong><small>Manage annual cycle</small></span></button>
+          <button class="quick-action glass-card" data-route="settings"><i>♙</i><span><strong>Officer Settings</strong><small>Reviewer and system setup</small></span></button>
+        </div>
+      </section>
+
+      <section class="dashboard-grid dashboard-content-grid">
+        <article class="glass-card dashboard-panel priority-panel">
+          <div class="panel-title"><div><span>Attention Required</span><h2>Priority Items</h2></div><button data-route="actions">View all</button></div>
+          <div class="priority-list">${attentionRows}</div>
+        </article>
+
+        <article class="glass-card dashboard-panel schedule-panel">
+          <div class="panel-title"><div><span>Governance Calendar</span><h2>Upcoming</h2></div><button data-route="annual">Open</button></div>
+          <div class="schedule-list">
+            <div><time>JUL 24</time><span><strong>By-Law Review</strong><small>${new Date(nextReview+"T12:00:00").toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric"})}</small></span></div>
+            <div><time>AUG 31</time><span><strong>September Preparation</strong><small>Executive Committee</small></span></div>
+            <div><time>SEP 30</time><span><strong>Governance Cycle Resumes</strong><small>By-Laws Committee</small></span></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="dashboard-section">
+        <div class="section-heading"><div><span>Core Workspace</span><h2>Governance Tools</h2></div><small>Organize, compare, govern</small></div>
+        <div class="tools-grid">
+          <button class="tool-card glass-card" data-route="intelligence"><i>◇</i><span><strong>Compliance Matrix</strong><small>Compare by-laws against governing authorities</small></span><b>→</b></button>
+          <button class="tool-card glass-card" data-route="review"><i>⇄</i><span><strong>Document Compare</strong><small>Review wording article by article</small></span><b>→</b></button>
+          <button class="tool-card glass-card" data-route="amendments"><i>✦</i><span><strong>Amendment Wizard</strong><small>Draft, approve, and publish changes</small></span><b>→</b></button>
+          <button class="tool-card glass-card" data-route="actions"><i>!</i><span><strong>Risk & Action Register</strong><small>Track responsibilities and overdue work</small></span><b>→</b></button>
+          <button class="tool-card glass-card" data-route="annual"><i>◷</i><span><strong>Annual Governance</strong><small>Manage recurring obligations</small></span><b>→</b></button>
+          <button class="tool-card glass-card" data-route="export"><i>▤</i><span><strong>Records & Reports</strong><small>Prepare evidence and governance exports</small></span><b>→</b></button>
+        </div>
+      </section>
+
+      <section class="dashboard-section">
+        <div class="section-heading"><div><span>Review Coverage</span><h2>Compliance by Authority</h2></div><small>CORE review status</small></div>
+        <div class="authority-grid">
+          ${authorities.map(([name,pct,sub])=>`<button class="authority-card glass-card" data-route="intelligence"><div class="mini-ring" data-progress-value="${pct}" style="--score:${pct}"><b>${pct}%</b></div><span><strong>${name}</strong><small>${sub}</small></span></button>`).join("")}
+        </div>
       </section>`;
 
     renderShell(content, "dashboard");

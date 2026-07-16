@@ -6,9 +6,9 @@ import { DialogService } from "../sdk/dialogs.js";
 import { PWAService } from "../sdk/pwa.js";
 
 const PLATFORM = {
-  version:"2.0.3-governance-polish",
-  build:"20260716.203",
-  releaseId:"CORE-GOVERNANCE-POLISH-203",
+  version:"2.0.4-committee-brand-polish",
+  build:"20260716.204",
+  releaseId:"CORE-COMMITTEE-BRAND-POLISH-204",
   environment:"Development",
   modules:[]
 };
@@ -305,14 +305,8 @@ function renderShell(content,active="dashboard"){
     <div class="app-shell">
       <div class="dev-banner">CORE Development Build · ${PLATFORM.version} · ${PLATFORM.build}</div>
       <header class="topbar">
-        <button class="brand" data-route="dashboard">
-          <span class="brand-logo-slot">
-            <img class="core-logo-image" src="assets/branding/core-logo.png" alt="CORE logo">
-          </span>
-          <span class="brand-copy">
-            <strong>CORE</strong>
-            <small>Compliance &amp; Organizational Resource Engine</small>
-          </span>
+        <button class="brand" data-route="dashboard" aria-label="CORE home">
+          <img class="core-header-logo" src="assets/branding/core-header-logo.png?v=20260716.204" alt="CORE — Compliance & Organizational Resource Engine">
         </button>
         <div class="top-actions"><button class="icon-btn" data-route="meetings" title="Meeting Manager">◷</button><button class="icon-btn" data-route="committees" title="Committee Manager">♙</button><button class="icon-btn" data-route="settings">⚙</button></div>
       </header>

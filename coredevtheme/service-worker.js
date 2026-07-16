@@ -19,7 +19,7 @@ const CORE_ASSETS = [
   "./sdk/dialogs.js",
   "./sdk/pwa.js",
   "./data/module-registry.json",
-  "./assets/branding/core-logo.png",
+  "./assets/branding/core-header-logo.png",
   "./assets/themes/cinematic-night.webp",
   "./assets/themes/cinematic-night-mobile.webp",
   "./assets/icons/core-192.png",

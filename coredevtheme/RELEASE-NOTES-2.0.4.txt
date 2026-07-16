@@ -1,0 +1,8 @@
+CORE 2.0.4 — Committee & Branding Polish
+
+- Loads the Committee Manager stylesheet explicitly.
+- Rebuilds committee cards to match the approved premium mockup style.
+- Improves mobile committee detail spacing, tabs, rows, and status areas.
+- Replaces the top navigation branding with the supplied CORE emblem, wordmark, and subtitle.
+- Replaces PWA and iOS Home Screen icons with the supplied CORE emblem and wordmark.
+- Preserves all functionality from 2.0.3.

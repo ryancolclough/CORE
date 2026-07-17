@@ -38,3 +38,45 @@
 .workspace-toolbar,.widget-edit-chrome,.edit-help,.widget-sheet{display:none!important}
 .live-workspace .workspace-slot{cursor:default!important;animation:none!important;touch-action:auto!important}
 .live-workspace .workspace-widget{outline:0!important}
+
+
+/* CORE 3.0.2 — mobile greeting alignment */
+@media(max-width:620px){
+  .dashboard-intro{
+    width:min(100%,680px);
+    margin:0 auto;
+    padding:38px 18px 30px!important;
+    text-align:center;
+  }
+  .dashboard-intro .eyebrow{
+    max-width:620px;
+    margin:0 auto 18px;
+    text-align:center;
+    line-height:1.55;
+    letter-spacing:.16em;
+  }
+  .dashboard-intro .eyebrow:after{
+    content:"";
+    display:block;
+    width:130px;
+    height:1px;
+    margin:18px auto 0;
+    background:linear-gradient(90deg,transparent,var(--brass),transparent);
+  }
+  .dashboard-intro h1{
+    margin:0 auto 18px!important;
+    max-width:680px;
+    text-align:center;
+    font-size:clamp(38px,10vw,58px)!important;
+    line-height:1.04!important;
+    text-wrap:balance;
+  }
+  .dashboard-intro p{
+    max-width:540px;
+    margin:0 auto!important;
+    text-align:center;
+    font-size:17px!important;
+    line-height:1.55!important;
+    text-wrap:balance;
+  }
+}

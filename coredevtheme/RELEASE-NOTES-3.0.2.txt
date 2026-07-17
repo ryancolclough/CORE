@@ -1,0 +1,31 @@
+CORE 3.0.2 — Overnight Polish
+
+1. MOBILE GREETING
+- Centered and balanced the role label, greeting and supporting line.
+- Added cleaner mobile spacing and responsive typography.
+
+2. ADMIN WORKSPACE STUDIO
+- Replaced the basic template picker with a functional visual layout builder.
+- Full card library, add/remove, drag-and-drop, fixed grid sizes, mobile/desktop preview, save template, duplicate, apply and publish.
+- Expanded initial templates to demonstrate more of CORE's capability.
+- Designed as an administrator feature for future permission controls.
+
+3. CORE APP ICON
+- Removed the CORE wordmark from Home Screen icons.
+- Uses only the large gold compass/square symbol with transparent surroundings.
+- Updated Apple touch, 192px, 512px and maskable icon files.
+
+4. ACTION STATUS COLOURS
+- Blue Active/Open.
+- Red Overdue.
+- Gold Due This Month.
+- Green Completed.
+- Added a working Due This Month filter.
+
+PRESERVED
+- Mission Control 3.0.1
+- Committee Manager polish
+- Amendment Centre
+- Action Centre workflows
+- Meeting Manager foundation
+- Existing local data

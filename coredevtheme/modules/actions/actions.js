@@ -102,6 +102,10 @@ export default function register(ctx){
     const visible = items.filter(item => {
       if(filter === "all") return true;
       if(filter === "completed") return item.status === "completed";
+      if(filter === "due-month"){
+        const now=new Date(), end=new Date(now.getFullYear(),now.getMonth()+1,0).toISOString().slice(0,10);
+        return !["completed","archived"].includes(item.status) && item.dueDate && item.dueDate >= today && item.dueDate <= end;
+      }
       if(filter === "overdue"){
         return !["completed","archived"].includes(item.status) &&
           item.dueDate &&
@@ -124,19 +128,20 @@ export default function register(ctx){
       </section>
 
       <section class="action-summary">
-        ${stat("Open",summary.open)}
-        ${stat("Overdue",summary.overdue)}
-        ${stat("Due This Month",summary.dueThisMonth)}
-        ${stat("Completed",summary.completed)}
+        ${stat("Open",summary.open,"open")}
+        ${stat("Overdue",summary.overdue,"overdue")}
+        ${stat("Due This Month",summary.dueThisMonth,"due-month")}
+        ${stat("Completed",summary.completed,"completed")}
       </section>
 
       <section class="panel">
         <div class="panel-head action-head">
           <div><h2>Action Items</h2><p>${visible.length} shown · ${summary.total} total</p></div>
           <div class="action-controls">
-            <button type="button" class="filter-btn ${filter==="active"?"active":""}" data-action-filter="active">Active</button>
-            <button type="button" class="filter-btn ${filter==="overdue"?"active":""}" data-action-filter="overdue">Overdue</button>
-            <button type="button" class="filter-btn ${filter==="completed"?"active":""}" data-action-filter="completed">Completed</button>
+            <button type="button" class="filter-btn status-active ${filter==="active"?"active":""}" data-action-filter="active">Active</button>
+            <button type="button" class="filter-btn status-overdue ${filter==="overdue"?"active":""}" data-action-filter="overdue">Overdue</button>
+            <button type="button" class="filter-btn status-completed ${filter==="completed"?"active":""}" data-action-filter="completed">Completed</button>
+            <button type="button" class="filter-btn status-due ${filter==="due-month"?"active":""}" data-action-filter="due-month">Due This Month</button>
             <button type="button" class="filter-btn ${filter==="all"?"active":""}" data-action-filter="all">All</button>
             <button type="button" class="btn" data-new-action>New Action</button>
           </div>
@@ -398,8 +403,8 @@ export default function register(ctx){
     return `<option value="${escapeHTML(value)}" ${current===value ? "selected" : ""}>${escapeHTML(label)}</option>`;
   }
 
-  function stat(label,value){
-    return `<article><span>${label}</span><strong>${value}</strong></article>`;
+  function stat(label,value,tone=""){
+    return `<article class="action-stat ${tone}"><span>${label}</span><strong>${value}</strong></article>`;
   }
 
   function statusLabel(status){

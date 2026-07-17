@@ -33,3 +33,17 @@
 @media(max-width:620px){
   .action-form-grid{grid-template-columns:1fr}
 }
+
+
+/* CORE 3.0.2 — universal action status colours */
+.action-stat{position:relative;overflow:hidden}
+.action-stat:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--muted)}
+.action-stat.open:before{background:#55aaff}.action-stat.open strong,.action-stat.open span{color:#62b1ff}
+.action-stat.overdue:before{background:#f04b4b}.action-stat.overdue strong,.action-stat.overdue span{color:#ff5d5d}
+.action-stat.due-month:before{background:#e4aa2d}.action-stat.due-month strong,.action-stat.due-month span{color:#f2bd42}
+.action-stat.completed:before{background:#46be68}.action-stat.completed strong,.action-stat.completed span{color:#57cf79}
+.filter-btn{border:1px solid var(--line);background:rgba(255,255,255,.035);color:var(--muted);border-radius:999px;padding:8px 13px;transition:.18s ease}
+.filter-btn.status-active{border-color:rgba(85,170,255,.5);color:#62b1ff}.filter-btn.status-active.active{background:rgba(36,112,190,.24);box-shadow:0 0 18px rgba(45,145,255,.16)}
+.filter-btn.status-overdue{border-color:rgba(240,75,75,.55);color:#ff5d5d}.filter-btn.status-overdue.active{background:rgba(180,35,35,.25);box-shadow:0 0 18px rgba(255,50,50,.15)}
+.filter-btn.status-due{border-color:rgba(228,170,45,.55);color:#f2bd42}.filter-btn.status-due.active{background:rgba(176,121,20,.25);box-shadow:0 0 18px rgba(240,174,45,.15)}
+.filter-btn.status-completed{border-color:rgba(70,190,104,.55);color:#57cf79}.filter-btn.status-completed.active{background:rgba(32,135,66,.24);box-shadow:0 0 18px rgba(50,205,90,.14)}

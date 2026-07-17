@@ -6,9 +6,9 @@ import { DialogService } from "../sdk/dialogs.js";
 import { PWAService } from "../sdk/pwa.js";
 
 const PLATFORM = {
-  version:"3.0.1-mission-control",
-  build:"20260716.301",
-  releaseId:"CORE-MISSION-CONTROL-301",
+  version:"3.0.2-overnight-polish",
+  build:"20260717.302",
+  releaseId:"CORE-OVERNIGHT-POLISH-302",
   environment:"Development",
   modules:[]
 };

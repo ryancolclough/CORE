@@ -2,14 +2,14 @@
   {
     "id": "dashboard",
     "name": "Dashboard",
-    "version": "1.7.2-motion",
+    "version": "3.0.2",
     "entry": "../modules/dashboard/dashboard.js",
     "enabled": true
   },
   {
     "id": "workspace",
     "name": "Workspace Manager",
-    "version": "1.0.0",
+    "version": "3.0.2",
     "entry": "../modules/workspace/workspace.js",
     "enabled": true
   },
@@ -51,7 +51,7 @@
   {
     "id": "actions",
     "name": "Action Centre",
-    "version": "1.0.1",
+    "version": "2.0.7",
     "entry": "../modules/actions/actions.js",
     "enabled": true
   },

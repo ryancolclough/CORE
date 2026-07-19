@@ -33,3 +33,11 @@ Added scroll reveals, animated progress wheels and counters, red-to-green progre
 ## 3.1.8
 - Dedicated routed compliance record page; no modal dependency.
 - Network-first code assets and immediate service-worker activation.
+
+## 3.2.1 — Committee Project Engine
+- Projects now include purpose, goal, lead, dates, phases, milestones, definition of done and evidence.
+- Tasks can be assigned to a committee project and phase.
+- Project progress is calculated from weighted phases and milestone/task completion.
+- Project detail pages show roadmap, milestone evidence, linked tasks and completion criteria.
+- Tasks require completion evidence before they can be closed.
+- Existing simple project/task records are migrated without deleting user data.

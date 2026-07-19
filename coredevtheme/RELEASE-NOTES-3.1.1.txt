@@ -1,5 +1,5 @@
 CORE 3.1.1 — ONCA Compliance Cache Fix
-Build 20260718.411
+Build 20260718.412
 
 Fixes:
 - Corrects visible platform version from 3.0.2 to 3.1.1.

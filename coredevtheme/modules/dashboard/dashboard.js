@@ -19,7 +19,19 @@ export default function register(ctx){
   const key="WORKSPACE_CONFIG";
   const getConfig=()=>{
     const saved=storage.get(key,null);
-    if(saved?.widgets?.length) return saved;
+    if(saved?.widgets?.length){
+      // Upgrade saved workspaces so newly released required widgets are not hidden.
+      const existing=new Set(saved.widgets.map(item=>item.id));
+      const migrated=[...saved.widgets];
+      for(const id of DEFAULT_WIDGETS){
+        if(!existing.has(id)){
+          migrated.push({id,size:CATALOG[id].defaultSize,order:migrated.length});
+        }
+      }
+      const next={...saved,widgets:migrated};
+      if(migrated.length!==saved.widgets.length) saveConfig(next);
+      return next;
+    }
     return {name:"My Workspace",role:"By-Law Officer",widgets:DEFAULT_WIDGETS.map((id,order)=>({id,size:CATALOG[id].defaultSize,order}))};
   };
   const saveConfig=config=>storage.set(key,config);

@@ -1,4 +1,4 @@
-const VERSION = "core-v3-3.1.1-20260718.411";
+const VERSION = "core-v3-3.1.2-20260718.412";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const APP_ROOT = new URL("./", self.location.href);

@@ -1,0 +1,11 @@
+CORE 3.1.2 — Compliance Visibility Fix
+Build 20260718.412
+
+FIXED
+- Migrates existing saved dashboard layouts to add the ONCA Compliance widget automatically.
+- Adds a permanent § Compliance button to the top bar so the register is always reachable.
+- Bumps service-worker and asset cache versions.
+- Keeps all 15 ONCA findings, suggested wording, evidence requirements and By-Law Committee tasks.
+
+UPLOAD
+Replace the full coredevtheme folder and upload index.html last.

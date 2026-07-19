@@ -2,14 +2,14 @@
   {
     "id": "dashboard",
     "name": "Dashboard",
-    "version": "3.1.1",
+    "version": "3.1.2",
     "entry": "../modules/dashboard/dashboard.js",
     "enabled": true
   },
   {
     "id": "workspace",
     "name": "Workspace Manager",
-    "version": "3.1.1",
+    "version": "3.1.2",
     "entry": "../modules/workspace/workspace.js",
     "enabled": true
   },
@@ -37,7 +37,7 @@
   {
     "id": "compliance",
     "name": "ONCA Compliance Blueprint",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "entry": "../modules/compliance/compliance.js",
     "enabled": true
   },

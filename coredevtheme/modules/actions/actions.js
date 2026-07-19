@@ -48,6 +48,12 @@ export default function register(ctx){
       return;
     }
 
+    const view = e.target.closest("[data-view-action]");
+    if(view){
+      openActionDetail(view.dataset.viewAction);
+      return;
+    }
+
     const edit = e.target.closest("[data-edit-action]");
     if(edit){
       openEditor(edit.dataset.editAction);
@@ -167,12 +173,31 @@ export default function register(ctx){
         </div>
         <div class="action-links">
           ${item.articleIndex !== undefined ? `<button type="button" data-open-action-source="${item.id}">Source</button>` : ""}
+          ${item.complianceId ? `<button type="button" data-view-action="${item.id}">Reasoning & Draft</button>` : ""}
           <button type="button" data-edit-action="${item.id}">Edit</button>
           ${item.status === "completed"
             ? `<button type="button" data-reopen-action="${item.id}">Reopen</button>`
             : `<button type="button" data-complete-action="${item.id}">Complete</button>`}
         </div>
       </article>`;
+  }
+
+  function openActionDetail(id){
+    const item=state.actionItems().find(x=>x.id===id);
+    if(!item) return;
+    const list=value=>Array.isArray(value)&&value.length?`<ul>${value.map(x=>`<li>${escapeHTML(x)}</li>`).join("")}</ul>`:`<p>Not recorded.</p>`;
+    dialogs.open(`${escapeHTML(item.complianceId||item.id)} · Compliance Work Record`, `
+      <div class="action-modal compliance-task-detail">
+        <div class="compliance-meta"><span class="compliance-pill">${escapeHTML(item.bylawLocation||item.sourceReference||"")}</span><span class="compliance-pill">${escapeHTML(item.priority||"medium").toUpperCase()} PRIORITY</span></div>
+        <h3>${escapeHTML(item.complianceTitle||item.title)}</h3>
+        <section class="compliance-box"><h4>Why this change is needed</h4><p>${escapeHTML(item.reasoning||item.description||"")}</p></section>
+        <section class="compliance-box"><h4>Where it should be added</h4><p>${escapeHTML(item.proposedPlacement||"Placement not recorded.")}</p></section>
+        <section class="compliance-box"><h4>Current bylaw condition</h4><p>${escapeHTML(item.currentState||"")}</p></section>
+        <section class="compliance-box"><h4>What must change</h4><p>${escapeHTML(item.needsWork||"")}</p></section>
+        <div class="compliance-grid"><section class="compliance-box"><h4>Authority / compliance target</h4>${list(item.compliesWith)}</section><section class="compliance-box"><h4>Evidence to retain</h4>${list(item.evidenceRequired)}</section><section class="compliance-box"><h4>Committee work steps</h4>${list(item.workSteps)}</section><section class="compliance-box"><h4>When this task is truly complete</h4>${list(item.completionCriteria)}</section></div>
+        <section class="compliance-box"><h4>Suggested draft wording</h4><div class="suggested-wording">${escapeHTML(item.suggestedWording||"No draft wording recorded.")}</div></section>
+        <div class="actions"><button class="btn" type="button" data-edit-action="${escapeHTML(item.id)}">Edit Assignment</button><button class="btn secondary" type="button" data-route="compliance">Open Full Compliance Register</button><button class="btn secondary" type="button" data-modal-cancel-action>Close</button></div>
+      </div>`);
   }
 
   function openEditor(id=""){
@@ -263,6 +288,18 @@ export default function register(ctx){
       sectionIndex:existing?.sectionIndex,
       createdDate:existing?.createdDate || new Date().toISOString().slice(0,10),
       completedDate:status === "completed" ? (existing?.completedDate || new Date().toISOString().slice(0,10)) : "",
+      complianceId:existing?.complianceId,
+      complianceTitle:existing?.complianceTitle,
+      bylawLocation:existing?.bylawLocation,
+      proposedPlacement:existing?.proposedPlacement,
+      reasoning:existing?.reasoning,
+      currentState:existing?.currentState,
+      needsWork:existing?.needsWork,
+      compliesWith:existing?.compliesWith,
+      evidenceRequired:existing?.evidenceRequired,
+      suggestedWording:existing?.suggestedWording,
+      workSteps:existing?.workSteps,
+      completionCriteria:existing?.completionCriteria,
       history:[
         ...(existing?.history || []),
         {

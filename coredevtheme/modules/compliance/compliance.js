@@ -6,7 +6,7 @@ export default function register(ctx){
 
   async function load(){
     if(DATA)return DATA;
-    DATA=await fetch('data/onca-compliance.json?v=20260718.412',{cache:'no-store'}).then(r=>r.json());
+    DATA=await fetch('data/onca-compliance.json?v=20260718.413',{cache:'no-store'}).then(r=>r.json());
     seedTasks();
     return DATA;
   }
@@ -14,8 +14,42 @@ export default function register(ctx){
     const current=state.actionItems();
     let changed=false;
     DATA.items.forEach(item=>{
-      if(current.some(a=>a.complianceId===item.id))return;
-      current.push({id:state.nextActionId(),title:item.task,description:`${item.title}\n\nNeeds work: ${item.needsWork}`,sourceType:'ONCA Compliance Review',sourceReference:`${item.id} · ${item.article}`,assignedCommittee:'By-Laws Committee',assignedOfficer:'',priority:item.risk==='high'?'high':'medium',status:'open',dueDate:'',createdDate:new Date().toISOString().slice(0,10),completedDate:'',complianceId:item.id,evidenceRequired:item.evidenceRequired,history:[{date:new Date().toISOString(),event:'Compliance task created',note:`Created automatically from ${item.id}`} ]});changed=true;
+      const detail={
+        complianceId:item.id,
+        complianceTitle:item.title,
+        bylawLocation:item.article+(item.section?` · ${item.section}`:''),
+        proposedPlacement:item.proposedPlacement,
+        reasoning:item.reasoning,
+        currentState:item.current,
+        needsWork:item.needsWork,
+        compliesWith:item.compliesWith,
+        evidenceRequired:item.evidenceRequired,
+        suggestedWording:item.suggestedWording,
+        workSteps:item.workSteps,
+        completionCriteria:item.completionCriteria
+      };
+      const existing=current.find(a=>a.complianceId===item.id);
+      if(existing){
+        Object.entries(detail).forEach(([key,value])=>{if(JSON.stringify(existing[key])!==JSON.stringify(value)){existing[key]=value;changed=true;}});
+        const fullDescription=`WHY THIS MATTERS:
+${item.reasoning}
+
+WHERE IT GOES:
+${item.proposedPlacement}
+
+WHAT NEEDS WORK:
+${item.needsWork}`;
+        if(existing.description!==fullDescription){existing.description=fullDescription;changed=true;}
+        return;
+      }
+      current.push({id:state.nextActionId(),title:item.task,description:`WHY THIS MATTERS:
+${item.reasoning}
+
+WHERE IT GOES:
+${item.proposedPlacement}
+
+WHAT NEEDS WORK:
+${item.needsWork}`,sourceType:'ONCA Compliance Review',sourceReference:`${item.id} · ${item.article} · ${item.section||''}`,assignedCommittee:'By-Laws Committee',assignedOfficer:'',priority:item.risk==='high'?'high':'medium',status:'open',dueDate:'',createdDate:new Date().toISOString().slice(0,10),completedDate:'',...detail,history:[{date:new Date().toISOString(),event:'Compliance task created',note:`Created automatically from ${item.id}`} ]});changed=true;
     });
     if(changed)state.saveActionItems(current);
   }
@@ -37,7 +71,7 @@ export default function register(ctx){
     renderShell(content,'compliance');
   }
   function button(value,label){return `<button class="btn secondary compliance-filter ${filter===value?'active':''}" data-compliance-filter="${value}">${label}</button>`}
-  function card(i){const task=state.actionItems().find(a=>a.complianceId===i.id);return `<article class="compliance-card ${i.risk}"><div class="compliance-meta"><span class="compliance-pill">${esc(i.id)}</span><span class="compliance-pill">${esc(i.article)}</span><span class="compliance-pill">${label(i.status)}</span><span class="compliance-pill">${i.risk.toUpperCase()} RISK</span></div><h3>${esc(i.title)}</h3><p><strong>Current state:</strong> ${esc(i.current)}</p><p><strong>What needs work:</strong> ${esc(i.needsWork)}</p><div class="compliance-grid"><div class="compliance-box"><h4>What it complies with</h4><ul>${i.compliesWith.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div class="compliance-box"><h4>Evidence required</h4><ul>${i.evidenceRequired.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div class="compliance-box" style="grid-column:1/-1"><h4>Suggested wording</h4><div class="suggested-wording">${esc(i.suggestedWording)}</div></div></div><div class="compliance-actions"><button class="btn secondary" data-copy-wording="${i.id}">Copy Suggested Wording</button><button class="btn" data-compliance-action>${task?`Open Task ${esc(task.id)}`:'Create Task'}</button></div></article>`}
+  function card(i){const task=state.actionItems().find(a=>a.complianceId===i.id);return `<article class="compliance-card ${i.risk}"><div class="compliance-meta"><span class="compliance-pill">${esc(i.id)}</span><span class="compliance-pill">${esc(i.article)}</span><span class="compliance-pill">${label(i.status)}</span><span class="compliance-pill">${i.risk.toUpperCase()} RISK</span></div><h3>${esc(i.title)}</h3><p><strong>Why this matters:</strong> ${esc(i.reasoning)}</p><p><strong>Where it belongs:</strong> ${esc(i.proposedPlacement)}</p><p><strong>Current state:</strong> ${esc(i.current)}</p><p><strong>What needs work:</strong> ${esc(i.needsWork)}</p><div class="compliance-grid"><div class="compliance-box"><h4>Committee work plan</h4><ol>${i.workSteps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div><div class="compliance-box"><h4>Completion standard</h4><ul>${i.completionCriteria.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div class="compliance-box"><h4>What it complies with</h4><ul>${i.compliesWith.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div class="compliance-box"><h4>Evidence required</h4><ul>${i.evidenceRequired.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div class="compliance-box" style="grid-column:1/-1"><h4>Suggested wording</h4><div class="suggested-wording">${esc(i.suggestedWording)}</div></div></div><div class="compliance-actions"><button class="btn secondary" data-copy-wording="${i.id}">Copy Suggested Wording</button><button class="btn" data-compliance-action>${task?`Open Task ${esc(task.id)}`:'Create Task'}</button></div></article>`}
   function label(s){return ({missing_article:'Missing Article',amendment_required:'Amendment Required',policy_and_amendment:'Policy + Amendment',review_required:'Review Required',remove_or_revalidate:'Remove / Revalidate'})[s]||s}
   function esc(v){return String(v??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 }

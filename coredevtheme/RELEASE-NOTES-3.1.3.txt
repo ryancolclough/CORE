@@ -1,0 +1,6 @@
+CORE 3.1.3 — Guided Compliance Work Records
+
+- Enriches all 15 existing ONCA Action Centre items in place; no duplicates.
+- Adds Why this matters, exact bylaw placement, current condition, required change, authority, evidence, work steps, completion criteria and suggested wording.
+- Adds a Reasoning & Draft button to each compliance action.
+- Migrates already-created compliance tasks when the ONCA Blueprint is opened.

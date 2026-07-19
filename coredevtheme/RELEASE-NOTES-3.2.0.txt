@@ -1,0 +1,11 @@
+CORE 3.2.0 — Premium Committee Workflow
+Build 20260719.420
+
+- Corrected CORE app icon and in-app branding with complete compass bottom arrow.
+- Repaired committee dashboard templates into structured, relevant grids.
+- Added role-specific templates for By-Laws, Finance, Property, Long-Range Planning, Insurance, Investments, Tenant Relations, and Fundraising.
+- Added recurring monthly Temple Board meeting-preparation assignments by committee.
+- Committee reports now update readiness and feed the agenda workflow.
+- Replaced generic Quick Actions with a premium action hub.
+- Added automatic repair of older scattered preset layouts.
+- Dashboard cards now route to working CORE modules.

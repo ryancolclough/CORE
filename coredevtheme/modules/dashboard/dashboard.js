@@ -1,81 +1,41 @@
 const CATALOG = {
-  governance:{name:"Governance Health",group:"Governance",defaultSize:"large"},
-  reviews:{name:"Open Reviews",group:"Compliance",defaultSize:"small"},
-  actions:{name:"Open Actions",group:"Productivity",defaultSize:"small"},
-  amendments:{name:"Amendments",group:"Governance",defaultSize:"small"},
-  annual:{name:"Annual Tasks",group:"Governance",defaultSize:"small"},
-  quick:{name:"Quick Actions",group:"Productivity",defaultSize:"wide"},
-  priorities:{name:"Today's Priorities",group:"Governance",defaultSize:"medium"},
-  committees:{name:"Committee Snapshot",group:"Committees",defaultSize:"medium"},
-  meetings:{name:"Meeting Readiness",group:"Meetings",defaultSize:"medium"},
-  activity:{name:"Recent Activity",group:"Records",defaultSize:"medium"},
-  documents:{name:"Document Control",group:"Records",defaultSize:"wide"},
-  compliance:{name:"ONCA Compliance",group:"Compliance",defaultSize:"medium"}
+  governance:{defaultSize:"large"},reviews:{defaultSize:"small"},actions:{defaultSize:"small"},amendments:{defaultSize:"small"},annual:{defaultSize:"small"},quick:{defaultSize:"wide"},priorities:{defaultSize:"medium"},committees:{defaultSize:"medium"},meetings:{defaultSize:"wide"},reports:{defaultSize:"medium"},activity:{defaultSize:"medium"},documents:{defaultSize:"wide"},compliance:{defaultSize:"medium"},legal:{defaultSize:"medium"},calendar:{defaultSize:"wide"},notifications:{defaultSize:"medium"},assets:{defaultSize:"medium"},operations:{defaultSize:"medium"},strategy:{defaultSize:"medium"},development:{defaultSize:"wide"},finance:{defaultSize:"medium"},insurance:{defaultSize:"medium"},tenants:{defaultSize:"medium"},fundraising:{defaultSize:"medium"},investments:{defaultSize:"medium"}
 };
-const DEFAULT_WIDGETS=["governance","reviews","actions","amendments","annual","quick","priorities","committees","meetings","activity","documents","compliance"];
-
+const CANONICAL={
+ "By-Law Committee":[["governance","wide"],["reviews","small"],["actions","small"],["amendments","small"],["compliance","medium"],["legal","medium"],["meetings","wide"],["reports","medium"],["documents","wide"],["activity","medium"]],
+ "Finance Committee":[["finance","wide"],["actions","small"],["annual","small"],["meetings","wide"],["reports","medium"],["documents","wide"],["activity","medium"]],
+ "Property Committee":[["operations","wide"],["actions","small"],["assets","medium"],["meetings","wide"],["reports","medium"],["calendar","wide"],["documents","wide"],["activity","medium"]],
+ "Long-Range Planning Committee":[["strategy","wide"],["actions","small"],["meetings","wide"],["reports","medium"],["calendar","wide"],["documents","wide"],["activity","medium"]],
+ "Insurance Committee":[["insurance","wide"],["assets","medium"],["actions","small"],["meetings","wide"],["reports","medium"],["calendar","wide"],["documents","wide"]],
+ "Investment Committee":[["investments","wide"],["actions","small"],["meetings","wide"],["reports","medium"],["documents","wide"],["activity","medium"]],
+ "Tenant Relations Committee":[["tenants","wide"],["actions","small"],["meetings","wide"],["reports","medium"],["calendar","wide"],["documents","wide"],["activity","medium"]],
+ "Fundraising Committee":[["fundraising","wide"],["actions","small"],["meetings","wide"],["reports","medium"],["calendar","wide"],["documents","wide"],["activity","medium"]]
+};
 export default function register(ctx){
-  const {router,state,renderShell,events,storage,toast}=ctx;
-  const key="WORKSPACE_CONFIG";
-  const getConfig=()=>{
-    const saved=storage.get(key,null);
-    if(saved?.widgets?.length){
-      // Upgrade saved workspaces so newly released required widgets are not hidden.
-      const existing=new Set(saved.widgets.map(item=>item.id));
-      const migrated=[...saved.widgets];
-      for(const id of DEFAULT_WIDGETS){
-        if(!existing.has(id)){
-          migrated.push({id,size:CATALOG[id].defaultSize,order:migrated.length});
-        }
-      }
-      const next={...saved,widgets:migrated};
-      if(migrated.length!==saved.widgets.length) saveConfig(next);
-      return next;
-    }
-    return {name:"My Workspace",role:"By-Law Officer",widgets:DEFAULT_WIDGETS.map((id,order)=>({id,size:CATALOG[id].defaultSize,order}))};
-  };
-  const saveConfig=config=>storage.set(key,config);
-
-  router.register("dashboard",()=>render());
-
-  function metrics(){
-    const m=state.metrics(), actions=state.actionSummary(), annual=state.annualTaskSummary();
-    const score=m.total?Math.round(((m.complete+m.discussion*.55+m.amendment*.35)/m.total)*100):0;
-    return {m,actions,annual,score,openReviews:Math.max(0,m.total-m.reviewed),amendments:state.amendmentItems(),attention:state.attentionItems().slice(0,4)};
-  }
-
-  function widget(id,data){
-    const {m,actions,annual,score,openReviews,amendments,attention}=data;
-    if(id==="governance") return `<article class="workspace-widget glass-card governance-card" data-widget-id="governance"><div class="governance-copy"><span class="card-kicker">Governance Health</span><strong data-count-to="${score}" data-count-suffix="%">${score}%</strong><p>Overall review completion and governance score.</p><button class="text-action" data-route="review">Open review <b>→</b></button></div><div class="hero-ring" data-progress-value="${score}" style="--score:${score}"><div><strong>${m.reviewed}</strong><small>of ${m.total}<br>reviewed</small></div></div></article>`;
-    if(id==="reviews") return metric(id,"Open Reviews",openReviews,`${m.percent}% complete`,"review");
-    if(id==="actions") return metric(id,"Open Actions",actions.open,`${actions.overdue} overdue`,"actions");
-    if(id==="amendments") return metric(id,"Amendments",amendments.length,"Tracked workflows","amendments");
-    if(id==="annual") return metric(id,"Annual Tasks",annual.upcoming,"Upcoming obligations","annual");
-    if(id==="quick") return `<article class="workspace-widget glass-card dashboard-panel" data-widget-id="quick"><div class="panel-title"><div><span>Work faster</span><h2>Quick Actions</h2></div></div><div class="quick-actions-grid compact"><button class="quick-action" data-route="committees"><i>♙</i><span><strong>Committees</strong><small>Open manager</small></span></button><button class="quick-action" data-route="meetings"><i>▦</i><span><strong>Meetings</strong><small>Agenda & live mode</small></span></button><button class="quick-action" data-route="review"><i>✓</i><span><strong>Start Review</strong><small>Assess a section</small></span></button><button class="quick-action" data-route="actions"><i>＋</i><span><strong>Add Action</strong><small>Assign work</small></span></button><button class="quick-action" data-route="compliance"><i>§</i><span><strong>ONCA Blueprint</strong><small>15 findings & tasks</small></span></button></div></article>`;
-    if(id==="priorities") return `<article class="workspace-widget glass-card dashboard-panel" data-widget-id="priorities"><div class="panel-title"><div><span>Attention Required</span><h2>Today's Priorities</h2></div></div><div class="priority-list">${attention.length?attention.map(item=>`<button class="priority-item" data-open-direct="${item.articleIndex}:${item.sectionIndex}"><span class="priority-dot ${item.review.status}"></span><span><strong>Section ${item.section.number}</strong><small>${item.section.title}</small></span><b>Review</b></button>`).join(""):'<div class="dashboard-empty">No urgent items.</div>'}</div></article>`;
-    if(id==="committees") return `<article class="workspace-widget glass-card dashboard-panel" data-widget-id="committees"><div class="panel-title"><div><span>Committee Manager</span><h2>Committee Snapshot</h2></div><button data-route="committees">View all</button></div><div class="snapshot-list"><div><b>By-Law Committee</b><span class="good">48% · Active</span></div><div><b>Building Committee</b><span class="warn">20% · Setup required</span></div><div><b>Test Committee</b><span>0% · Not started</span></div></div></article>`;
-    if(id==="meetings") return `<article class="workspace-widget glass-card dashboard-panel" data-widget-id="meetings"><div class="panel-title"><div><span>Meeting Manager</span><h2>Next Meeting</h2></div><button data-route="meetings">Open</button></div><div class="meeting-readiness"><strong>Temple Board Meeting</strong><small>Tuesday, July 29 · 7:00 PM</small><div class="readiness-row"><span class="good">3 reports ready</span><span class="warn">2 missing</span></div><button class="btn secondary" data-route="meetings">Build agenda</button></div></article>`;
-    if(id==="activity") return `<article class="workspace-widget glass-card dashboard-panel" data-widget-id="activity"><div class="panel-title"><div><span>Records</span><h2>Recent Activity</h2></div></div><div class="snapshot-list"><div><b>Review updated</b><span>Article VI · Today</span></div><div><b>Committee member added</b><span>Greg Forsyth · Today</span></div><div><b>Meeting scheduled</b><span>July 29</span></div></div></article>`;
-    if(id==="compliance") return `<article class="workspace-widget glass-card dashboard-panel" data-widget-id="compliance"><div class="panel-title"><div><span>ONCA Review</span><h2>Compliance Blueprint</h2></div><button data-route="compliance">Open</button></div><div class="meeting-readiness"><strong>15 governance findings loaded</strong><small>5 missing articles · evidence lists · suggested wording · committee tasks</small><div class="readiness-row"><span class="warn">Action required</span><span class="good">Structured in CORE</span></div><button class="btn secondary" data-route="compliance">Review findings</button></div></article>`;
-    if(id==="documents") return `<article class="workspace-widget glass-card dashboard-panel" data-widget-id="documents"><div class="panel-title"><div><span>Document Control</span><h2>Current Edition</h2></div></div><div class="document-strip"><div><small>Edition</small><b>6.0</b></div><div><small>Version</small><b>6.0.0</b></div><div><small>Adopted</small><b>May 24, 2025</b></div><div><small>Next Review</small><b>Jul 24, 2026</b></div></div></article>`;
-    return "";
-  }
-
-  function metric(id,label,value,sub,route){return `<button class="workspace-widget glass-card metric-card" data-widget-id="${id}" data-route="${route}"><span>${label}</span><strong data-count-to="${value}">${value}</strong><small>${sub}</small></button>`;}
-
-  function render(){
-    const config=getConfig();
-    const data=metrics();
-    const cards=config.widgets.slice().sort((a,b)=>a.order-b.order).map(item=>`<div class="workspace-slot size-${item.size||CATALOG[item.id]?.defaultSize||'medium'}" data-slot-id="${item.id}">${widget(item.id,data)}</div>`).join("");
-    renderShell(`<section class="hero cinematic-hero dashboard-intro"><div class="eyebrow">${escape(config.name)} · Temple Board Governance Centre</div><h1>Good ${state.greeting()}, Ryan.</h1><p>Your governance work, arranged around how you work.</p></section><section class="live-workspace" id="live-workspace">${cards}</section>`,`dashboard`);
-  }
-
-  document.addEventListener('click',e=>{
-    const direct=e.target.closest('[data-open-direct]');
-    if(direct){
-      const [articleIndex,sectionIndex]=direct.dataset.openDirect.split(':').map(Number);
-      events.emit('review:open-direct',{articleIndex,sectionIndex});
-    }
-  });
+ const {router,state,renderShell,events,storage}=ctx,key="WORKSPACE_CONFIG";
+ router.register("dashboard",render);
+ function getConfig(){let c=storage.get(key,null)||{name:"By-Law Committee",role:"By-Law Committee",widgets:[]};if(CANONICAL[c.name]){c={...c,widgets:CANONICAL[c.name].map(([id,size],order)=>({id,size,order}))};storage.set(key,c)}return c}
+ function metrics(){const m=state.metrics(),a=state.actionSummary(),annual=state.annualTaskSummary(),score=m.total?Math.round(((m.complete+m.discussion*.55+m.amendment*.35)/m.total)*100):0;return{m,a,annual,score,openReviews:Math.max(0,m.total-m.reviewed),amendments:state.amendmentItems(),attention:state.attentionItems().slice(0,4)}}
+ function meeting(){return storage.get("MEETING_V1",{title:"Temple Board Meeting",date:"2026-07-29",time:"19:00",sections:[]})}
+ function widget(id,d){const {m,a,annual,score,openReviews,amendments,attention}=d,mtg=meeting(),secs=mtg.sections||[],ready=secs.filter(x=>x.ready).length,missing=secs.length-ready;
+  if(id==="governance")return `<article class="workspace-widget glass-card governance-card"><div class="governance-copy"><span class="card-kicker">Governance Health</span><strong>${score}%</strong><p>Article review, amendment and evidence readiness.</p><button class="text-action" data-route="review">Open review <b>→</b></button></div><div class="hero-ring" style="--score:${score}"><div><strong>${m.reviewed}</strong><small>of ${m.total}<br>reviewed</small></div></div></article>`;
+  if(id==="reviews")return metric(id,"Open Reviews",openReviews,`${m.percent}% complete`,"review");if(id==="actions")return metric(id,"Open Actions",a.open,`${a.overdue} overdue`,"actions");if(id==="amendments")return metric(id,"Amendments",amendments.length,"Tracked workflows","amendments");if(id==="annual")return metric(id,"Annual Tasks",annual.upcoming,"Upcoming obligations","annual");
+  if(id==="quick")return actionHub();
+  if(id==="meetings")return `<article class="workspace-widget glass-card dashboard-panel meeting-premium"><div class="panel-title"><div><span>Meeting Manager</span><h2>Next Temple Board Meeting</h2></div><button data-route="meetings">Open</button></div><div class="meeting-premium-grid"><div><strong>${esc(mtg.title)}</strong><small>${esc(mtg.date)} · ${esc(mtg.time)}</small><div class="readiness-meter"><i style="--ready:${secs.length?Math.round(ready/secs.length*100):0}%"></i></div><div class="readiness-row"><span class="good">${ready} reports ready</span><span class="warn">${missing} missing</span></div></div><button class="agenda-cta" data-route="meetings"><b>Build agenda</b><small>Pull completed committee reports into the meeting</small><span>→</span></button></div></article>`;
+  if(id==="reports")return `<article class="workspace-widget glass-card dashboard-panel"><div class="panel-title"><div><span>Monthly Preparation</span><h2>Committee Reports</h2></div><button data-route="meetings">Open</button></div><div class="prep-mini">${secs.slice(0,4).map(s=>`<div><span class="status-dot ${s.ready?'ok':'due'}"></span><b>${esc(s.committee||s.title)}</b><small>${s.ready?'Submitted':'Required'}</small></div>`).join('')||'<p>No meeting workflow seeded yet.</p>'}</div></article>`;
+  if(id==="compliance")return panel("ONCA Review","Compliance Blueprint","15 findings linked to articles, wording, evidence and approval workflows.","compliance");
+  if(id==="legal")return panel("Final Safeguard","Legal Review","Prepare the consolidated package for Ontario not-for-profit counsel review.","compliance");
+  if(id==="documents")return panel("Document Control","Current Edition","Approved text, certification, amendment history and evidence archive.","export");
+  if(id==="activity")return panel("Records","Recent Activity","Review updates, committee submissions and meeting preparation history.","actions");
+  if(id==="committees")return panel("Committee Manager","Committee Workspace","Roles, mandates, reports and assigned preparation work.","committees");
+  if(id==="priorities")return `<article class="workspace-widget glass-card dashboard-panel"><div class="panel-title"><div><span>Attention Required</span><h2>Today's Priorities</h2></div></div><div class="priority-list">${attention.map(x=>`<button class="priority-item" data-open-direct="${x.articleIndex}:${x.sectionIndex}"><span class="priority-dot ${x.review.status}"></span><span><strong>Section ${x.section.number}</strong><small>${esc(x.section.title)}</small></span><b>Review</b></button>`).join('')||'<div class="dashboard-empty">No urgent items.</div>'}</div></article>`;
+  const defs={finance:["Finance Committee","Finance Readiness","Budget, statements, invoices and public-accountant decisions.","committees"],operations:["Property Committee","Building Operations","Inspections, maintenance, safety, keys, alarms and contractors.","committees"],assets:["Property & Insurance","Inventory & Assets","Asset register, condition, valuation and insurance evidence.","committees"],strategy:["Long-Range Planning","Five-Year Plan","Capital projects, milestones, risks and annual plan review.","committees"],insurance:["Insurance Committee","Coverage Readiness","Policies, renewals, quotes, claims and asset values.","committees"],investments:["Investment Committee","Portfolio Oversight","Holdings, performance, recommendations and approvals.","committees"],tenants:["Tenant Relations","Lease & Usage","Renewals, assessments, building use and tenant issues.","committees"],fundraising:["Fundraising Committee","Campaign Readiness","Targets, income, expenses, approvals and reports.","committees"],calendar:["Governance Calendar","Upcoming Deadlines","Meetings, filings, renewals and assigned due dates.","annual"],notifications:["Notifications","Assignments & Alerts","Overdue work, reminders and escalations.","actions"],development:["Administration","CORE Mission Control","Build status, roadmap and system checks.","developer"]};
+  if(defs[id])return panel(...defs[id]);return ''
+ }
+ function actionHub(){return `<article class="workspace-widget glass-card premium-action-hub"><div class="action-hub-head"><div><span>Command Centre</span><h2>Continue the work</h2><p>Focused actions for governance preparation.</p></div><div class="action-hub-mark">✦</div></div><div class="action-hub-primary"><button data-route="review"><i>01</i><span><b>Continue Article Review</b><small>Open marked sections and findings</small></span><em>→</em></button><button data-route="meetings"><i>02</i><span><b>Prepare Board Meeting</b><small>Collect committee reports and build agenda</small></span><em>→</em></button></div><div class="action-hub-secondary"><button data-route="compliance">ONCA Findings</button><button data-route="amendments">Draft Amendments</button><button data-route="actions">Assigned Work</button><button data-route="export">Evidence & Export</button></div></article>`}
+ function panel(k,t,p,r){return `<article class="workspace-widget glass-card dashboard-panel"><div class="panel-title"><div><span>${k}</span><h2>${t}</h2></div><button data-route="${r}">Open</button></div><p class="panel-copy">${p}</p><button class="text-action" data-route="${r}">Continue <b>→</b></button></article>`}
+ function metric(id,l,v,s,r){return `<button class="workspace-widget glass-card metric-card" data-route="${r}"><span>${l}</span><strong>${v}</strong><small>${s}</small></button>`}
+ function render(){const c=getConfig(),d=metrics(),cards=c.widgets.sort((a,b)=>a.order-b.order).map(x=>`<div class="workspace-slot size-${x.size||CATALOG[x.id]?.defaultSize||'medium'}">${widget(x.id,d)}</div>`).join('');renderShell(`<section class="hero cinematic-hero dashboard-intro"><div class="eyebrow">${esc(c.name)} · Temple Board Governance Centre</div><h1>Good ${state.greeting()}, Ryan.</h1><p>Your committee work, meeting preparation and evidence in one place.</p></section><section class="live-workspace premium-grid">${cards}</section>`,`dashboard`)}
+ document.addEventListener('click',e=>{const d=e.target.closest('[data-open-direct]');if(d){const[a,b]=d.dataset.openDirect.split(':').map(Number);events.emit('review:open-direct',{articleIndex:a,sectionIndex:b})}})
 }
-function escape(v){return String(v||'').replace(/[&<>\"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function esc(v){return String(v||'').replace(/[&<>\"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}

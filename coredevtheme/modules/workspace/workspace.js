@@ -15,26 +15,46 @@ const CATALOG={
   assets:{name:"Inventory & Assets",group:"Operations",description:"Insurable assets, reviews and condition status.",defaultSize:"medium"},
   operations:{name:"Building Operations",group:"Operations",description:"Inspections, keys, alarms and maintenance.",defaultSize:"medium"},
   strategy:{name:"Strategic Planning",group:"Planning",description:"Long-range initiatives, milestones and risk.",defaultSize:"medium"},
-  development:{name:"CORE Mission Control",group:"Administration",description:"Roadmap, releases and current development focus.",defaultSize:"wide"}
+  development:{name:"CORE Mission Control",group:"Administration",description:"Roadmap, releases and current development focus.",defaultSize:"wide"},
+  legal:{name:"Legal Review",group:"Compliance",description:"Counsel review, comments, clearance and evidence.",defaultSize:"medium"},
+  reports:{name:"Committee Reports",group:"Meetings",description:"Monthly reports due for the next Temple Board agenda.",defaultSize:"medium"},
+  finance:{name:"Finance Readiness",group:"Finance",description:"Budget, statements, invoices, audit or review decisions.",defaultSize:"medium"},
+  insurance:{name:"Insurance Readiness",group:"Operations",description:"Policies, renewals, quotes, claims and asset values.",defaultSize:"medium"},
+  tenants:{name:"Tenant Relations",group:"Operations",description:"Leases, renewals, assessments, usage and tenant issues.",defaultSize:"medium"},
+  fundraising:{name:"Fundraising",group:"Finance",description:"Campaigns, targets, income, expenses and approvals.",defaultSize:"medium"},
+  investments:{name:"Investments",group:"Finance",description:"Holdings, performance, recommendations and approvals.",defaultSize:"medium"}
 };
 const TEMPLATES={
-  "By-Law Committee":["governance","reviews","amendments","priorities","actions","committees","meetings","documents","activity"],
-  "Building Committee":["operations","actions","meetings","priorities","assets","calendar","documents","activity"],
-  "Finance Committee":["governance","actions","annual","meetings","assets","calendar","documents","activity"],
-  "Temple Board Executive":["governance","priorities","committees","meetings","actions","notifications","calendar","documents","activity"],
-  "CORE Administrator":["governance","development","committees","actions","meetings","notifications","calendar","documents","activity"]
-};
+  "By-Law Committee":["governance","reviews","actions","amendments","compliance","legal","meetings","reports","documents","activity"],
+  "Finance Committee":["finance","actions","annual","meetings","reports","documents","activity"],
+  "Property Committee":["operations","actions","assets","meetings","reports","calendar","documents","activity"],
+  "Long-Range Planning Committee":["strategy","actions","meetings","reports","calendar","documents","activity"],
+  "Insurance Committee":["insurance","assets","actions","meetings","reports","calendar","documents"],
+  "Investment Committee":["investments","actions","meetings","reports","documents","activity"],
+  "Tenant Relations Committee":["tenants","actions","meetings","reports","calendar","documents","activity"],
+  "Fundraising Committee":["fundraising","actions","meetings","reports","calendar","documents","activity"],
+  "Temple Board Executive":["governance","priorities","committees","meetings","reports","actions","notifications","calendar","documents","activity"],
+  "CORE Administrator":["governance","development","committees","actions","meetings","reports","notifications","calendar","documents","activity"]
+}
 const SIZES=["small","medium","wide","large"];
 export default function register(ctx){
  const {router,renderShell,storage,toast}=ctx;
- const key="WORKSPACE_CONFIG", templateKey="WORKSPACE_TEMPLATES", draftKey="WORKSPACE_BUILDER_DRAFT";
+ const key="WORKSPACE_CONFIG", templateKey="WORKSPACE_TEMPLATES", draftKey="WORKSPACE_BUILDER_DRAFT", templateVersionKey="WORKSPACE_TEMPLATE_VERSION";
  let draft=null, draggingId="", builderDevice="desktop";
  router.register("workspace",()=>render());
  function persistDraft(){ if(draft) storage.set(draftKey, normalize(JSON.parse(JSON.stringify(draft)))); }
  function clearDraft(){ storage.remove ? storage.remove(draftKey) : storage.set(draftKey,null); }
  function savedTemplates(){return storage.get(templateKey,{});}
  function allTemplates(){return {...TEMPLATES,...savedTemplates()};}
- function current(){return storage.get(key,{name:"By-Law Committee",role:"By-Law Committee",widgets:TEMPLATES["By-Law Committee"].map((id,order)=>({id,size:CATALOG[id].defaultSize,order}))});}
+ function current(){
+   let config=storage.get(key,{name:"By-Law Committee",role:"By-Law Committee",widgets:TEMPLATES["By-Law Committee"].map((id,order)=>({id,size:CATALOG[id].defaultSize,order}))});
+   const version=storage.get(templateVersionKey,0);
+   if(version<2 && TEMPLATES[config.name]){
+     config={name:config.name,role:config.name,widgets:TEMPLATES[config.name].map((id,order)=>({id,size:CATALOG[id].defaultSize,order}))};
+     storage.set(key,config);storage.set(templateVersionKey,2);
+   }
+   return config;
+ }
  function normalize(config){return {...config,widgets:(config.widgets||[]).filter(x=>CATALOG[x.id]).map((x,i)=>({...x,size:SIZES.includes(x.size)?x.size:CATALOG[x.id].defaultSize,order:i}))};}
  function openBuilder(name=""){
    const templates=allTemplates();

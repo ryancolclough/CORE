@@ -1,5 +1,5 @@
-CORE 3.1.9 — Layout Builder Scroll & Draft State Fix
-Build 20260718.419
+CORE 3.2.0 — Layout Builder Scroll & Draft State Fix
+Build 20260719.420
 
 - Card Library now scrolls inside its own panel without chaining into the page.
 - Adding, removing, resizing, or reordering a card preserves the library and page scroll positions.

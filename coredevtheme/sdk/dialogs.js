@@ -5,10 +5,12 @@ export class DialogService {
     document.querySelector("#modal-body").innerHTML = body;
     modal.classList.add("open");
     modal.setAttribute("aria-hidden","false");
+    document.body.classList.add("modal-open");
   }
   close(){
     const modal = document.querySelector("#core-modal");
     modal?.classList.remove("open");
     modal?.setAttribute("aria-hidden","true");
+    document.body.classList.remove("modal-open");
   }
 }

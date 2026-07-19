@@ -1,0 +1,9 @@
+CORE 3.1.6 — MODAL SCROLL FIX
+Build 20260718.416
+
+FIXED
+- Reasoning & Draft modal now scrolls independently on iPhone/iPad and installed PWA mode.
+- Swiping inside the modal no longer closes it.
+- Backdrop taps no longer close long compliance records accidentally; use the X or Close button.
+- Background page is locked while a modal is open.
+- Added momentum scrolling, overscroll containment, and mobile full-height modal sizing.

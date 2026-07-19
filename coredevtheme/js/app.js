@@ -6,8 +6,8 @@ import { DialogService } from "../sdk/dialogs.js";
 import { PWAService } from "../sdk/pwa.js";
 
 const PLATFORM = {
-  version:"3.1.5-live-comparison",
-  build:"20260718.415",
+  version:"3.1.6-modal-scroll-fix",
+  build:"20260718.416",
   releaseId:"CORE-ONCA-WORK-RECORDS-313",
   environment:"Development",
   modules:[]
@@ -306,7 +306,7 @@ function renderShell(content,active="dashboard"){
       <div class="dev-banner">CORE Development Build · ${PLATFORM.version} · ${PLATFORM.build}</div>
       <header class="topbar">
         <button class="brand" data-route="dashboard" aria-label="CORE home">
-          <img class="core-header-logo" src="assets/branding/core-header-logo.png?v=20260718.415" alt="CORE — Compliance & Organizational Resource Engine">
+          <img class="core-header-logo" src="assets/branding/core-header-logo.png?v=20260718.416" alt="CORE — Compliance & Organizational Resource Engine">
         </button>
         <div class="top-actions"><button class="icon-btn" data-route="compliance" title="ONCA Compliance Blueprint" aria-label="ONCA Compliance Blueprint">§</button><button class="icon-btn" data-route="meetings" title="Meeting Manager">◷</button><button class="icon-btn" data-route="committees" title="Committee Manager">♙</button><button class="icon-btn" data-route="settings">⚙</button></div>
       </header>
@@ -397,12 +397,12 @@ function initMotionSystem(){
 
 async function boot(){
   await pwa.init();
-  const registry = await fetch("data/module-registry.json?v=20260718.415", {cache:"no-store"}).then(r=>{
+  const registry = await fetch("data/module-registry.json?v=20260718.416", {cache:"no-store"}).then(r=>{
     if(!r.ok) throw new Error(`Module registry HTTP ${r.status}`);
     return r.json();
   });
   for(const item of registry.filter(x=>x.enabled)){
-    const mod = await import(`${item.entry}?v=20260718.415`);
+    const mod = await import(`${item.entry}?v=20260718.416`);
     PLATFORM.modules.push(item);
     mod.default({router,state,storage,events,themes,dialogs,pwa,renderShell,toast,platform:PLATFORM});
   }
@@ -418,7 +418,7 @@ async function boot(){
 document.addEventListener("click",e=>{
   const r=e.target.closest("[data-route]")?.dataset.route;
   if(r){ e.preventDefault(); try{router.go(r)}catch(err){console.error(err);toast("Module route unavailable.");} }
-  if(e.target.closest("[data-close-modal]")||e.target.id==="core-modal") dialogs.close();
+  if(e.target.closest("[data-close-modal]")) dialogs.close();
 });
 
 boot().catch(err=>{

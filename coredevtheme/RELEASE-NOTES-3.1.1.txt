@@ -1,0 +1,9 @@
+CORE 3.1.1 — ONCA Compliance Cache Fix
+Build 20260718.411
+
+Fixes:
+- Corrects visible platform version from 3.0.2 to 3.1.1.
+- Bumps the PWA service-worker cache so installed devices receive the new build.
+- Adds the ONCA compliance stylesheet and module assets to the offline cache.
+- Adds onca-compliance.json to network-first data handling.
+- Retains all 15 ONCA findings and automatic By-Law Committee task creation.

@@ -1,4 +1,4 @@
-const VERSION = "core-v3-3.0.2a-20260717.3021";
+const VERSION = "core-v3-3.1.1-20260718.411";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const APP_ROOT = new URL("./", self.location.href);
@@ -20,6 +20,7 @@ const CORE_ASSETS = [
   "./sdk/pwa.js",
   "./data/module-registry.json",
   "./data/development-roadmap.json",
+  "./data/onca-compliance.json",
   "./assets/branding/core-header-logo.png",
   "./assets/themes/cinematic-night.webp",
   "./assets/themes/cinematic-night-mobile.webp",
@@ -28,6 +29,8 @@ const CORE_ASSETS = [
   "./assets/icons/core-maskable-512.png",
   "./modules/dashboard/dashboard.css",
   "./modules/dashboard/dashboard.js",
+  "./modules/compliance/compliance.js",
+  "./modules/compliance/compliance.css",
   "./modules/review/review.css",
   "./modules/review/review.js",
   "./modules/amendment/amendment.css",
@@ -92,7 +95,7 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  const isData = url.pathname.includes("/orefinal/") || url.pathname.endsWith("module-registry.json");
+  const isData = url.pathname.includes("/orefinal/") || url.pathname.endsWith("module-registry.json") || url.pathname.endsWith("onca-compliance.json");
   if(isData){
     event.respondWith(
       fetch(request)

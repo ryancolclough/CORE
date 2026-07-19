@@ -29,3 +29,7 @@ Added scroll reveals, animated progress wheels and counters, red-to-green progre
 - Added periodic visible-card shine sequencing and upward-scroll return animation.
 - Added browser Back/Forward, deep-link hashes, and refresh-safe module routing.
 - Updated mobile dashboard layout and spacing.
+
+## 3.1.8
+- Dedicated routed compliance record page; no modal dependency.
+- Network-first code assets and immediate service-worker activation.

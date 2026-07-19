@@ -1,0 +1,11 @@
+CORE 3.1.8 — DEDICATED COMPLIANCE REVIEW PAGE
+
+Fixes the remaining Reasoning & Draft overlay issue on desktop and mobile.
+
+- Reasoning & Draft now navigates to the dedicated #/action-detail route.
+- The global modal is explicitly closed before navigation.
+- The detail record renders inside the normal CORE page shell and uses standard page scrolling.
+- Service worker now activates immediately and loads JavaScript/CSS network-first to prevent an old cached modal build from running under a new version label.
+- Existing 15 compliance tasks remain intact.
+
+Build 20260718.418

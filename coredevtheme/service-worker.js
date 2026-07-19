@@ -1,4 +1,4 @@
-const VERSION = "core-v3-3.1.7-20260718.417";
+const VERSION = "core-v3-3.1.8-20260718.418";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const APP_ROOT = new URL("./", self.location.href);
@@ -58,6 +58,7 @@ const CORE_ASSETS = [
 ].map(path => new URL(path, APP_ROOT).href);
 
 self.addEventListener("install", event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then(cache => Promise.allSettled(CORE_ASSETS.map(url => cache.add(url))))
@@ -99,6 +100,22 @@ self.addEventListener("fetch", event => {
   if(isData){
     event.respondWith(
       fetch(request)
+        .then(response => {
+          if(response.ok){
+            const copy = response.clone();
+            caches.open(RUNTIME_CACHE).then(cache => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  const isCodeAsset = /\.(?:js|css)$/.test(url.pathname);
+  if(isCodeAsset){
+    event.respondWith(
+      fetch(request, {cache:"no-store"})
         .then(response => {
           if(response.ok){
             const copy = response.clone();

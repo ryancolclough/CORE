@@ -4,12 +4,13 @@ export default function register(ctx){
   const { router, state, renderShell, toast, events, dialogs, storage } = ctx;
   let currentFilter = "active";
   let complianceDataPromise = null;
+  let pendingDetailId = "";
 
   // Compliance actions always resolve their detail from the live comparison register.
   // Saved Action Centre records are assignments/status only; they are never the legal-analysis source of truth.
   function loadComplianceData(){
     if(!complianceDataPromise){
-      complianceDataPromise = fetch("data/onca-compliance.json?v=20260718.417", {cache:"no-store"})
+      complianceDataPromise = fetch("data/onca-compliance.json?v=20260718.418", {cache:"no-store"})
         .then(response => {
           if(!response.ok) throw new Error(`Compliance register failed to load (${response.status})`);
           return response.json();
@@ -61,6 +62,10 @@ export default function register(ctx){
   hydrateComplianceTasks();
 
   router.register("actions", () => renderActions(currentFilter));
+  router.register("action-detail", () => {
+    if(!pendingDetailId){ router.go("actions"); return; }
+    renderActionDetailPage(pendingDetailId);
+  });
 
   events.on("actions:create-from-review", detail => {
     const items = state.actionItems();
@@ -106,7 +111,9 @@ export default function register(ctx){
 
     const view = e.target.closest("[data-view-action]");
     if(view){
-      openActionDetail(view.dataset.viewAction);
+      pendingDetailId = view.dataset.viewAction;
+      dialogs.close();
+      router.go("action-detail");
       return;
     }
 
@@ -238,7 +245,7 @@ export default function register(ctx){
       </article>`;
   }
 
-  async function openActionDetail(id){
+  async function renderActionDetailPage(id){
     const savedItem=state.actionItems().find(x=>x.id===id);
     if(!savedItem) return;
 
@@ -298,7 +305,8 @@ export default function register(ctx){
           </div>
         </div>
       </section>`;
-    renderShell(content,"actions");
+    dialogs.close();
+    renderShell(content,"action-detail");
     window.scrollTo({top:0,behavior:"instant"});
   }
 

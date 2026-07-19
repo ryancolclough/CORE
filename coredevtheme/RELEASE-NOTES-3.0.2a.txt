@@ -1,0 +1,9 @@
+CORE 3.0.2a — App Icon Hotfix
+
+- Replaced the incorrect white/cropped Home Screen icon.
+- Uses the exact approved gold compass-and-square artwork.
+- Preserves the full lower compass point.
+- Removes the CORE wordmark from the icon.
+- Uses an opaque dark background so iOS does not render transparency as white.
+- Updated Apple touch, 192px, 512px, and maskable icons.
+- Updated service-worker and icon cache versions.

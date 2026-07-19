@@ -6,9 +6,9 @@ import { DialogService } from "../sdk/dialogs.js";
 import { PWAService } from "../sdk/pwa.js";
 
 const PLATFORM = {
-  version:"3.0.2-overnight-polish",
-  build:"20260717.302",
-  releaseId:"CORE-OVERNIGHT-POLISH-302",
+  version:"3.1.0-onca-compliance",
+  build:"20260718.401",
+  releaseId:"CORE-ONCA-COMPLIANCE-310",
   environment:"Development",
   modules:[]
 };
@@ -306,7 +306,7 @@ function renderShell(content,active="dashboard"){
       <div class="dev-banner">CORE Development Build · ${PLATFORM.version} · ${PLATFORM.build}</div>
       <header class="topbar">
         <button class="brand" data-route="dashboard" aria-label="CORE home">
-          <img class="core-header-logo" src="assets/branding/core-header-logo.png?v=20260716.207" alt="CORE — Compliance & Organizational Resource Engine">
+          <img class="core-header-logo" src="assets/branding/core-header-logo.png?v=20260718.401" alt="CORE — Compliance & Organizational Resource Engine">
         </button>
         <div class="top-actions"><button class="icon-btn" data-route="meetings" title="Meeting Manager">◷</button><button class="icon-btn" data-route="committees" title="Committee Manager">♙</button><button class="icon-btn" data-route="settings">⚙</button></div>
       </header>
@@ -397,12 +397,12 @@ function initMotionSystem(){
 
 async function boot(){
   await pwa.init();
-  const registry = await fetch("data/module-registry.json?v=20260716.207", {cache:"no-store"}).then(r=>{
+  const registry = await fetch("data/module-registry.json?v=20260718.401", {cache:"no-store"}).then(r=>{
     if(!r.ok) throw new Error(`Module registry HTTP ${r.status}`);
     return r.json();
   });
   for(const item of registry.filter(x=>x.enabled)){
-    const mod = await import(`${item.entry}?v=20260716.207`);
+    const mod = await import(`${item.entry}?v=20260718.401`);
     PLATFORM.modules.push(item);
     mod.default({router,state,storage,events,themes,dialogs,pwa,renderShell,toast,platform:PLATFORM});
   }
@@ -410,6 +410,7 @@ async function boot(){
   if(!router.routes.has("annual")) router.register("annual",()=>toast("Annual Governance Manager unavailable."));
   if(!router.routes.has("intelligence")) router.register("intelligence",()=>toast("Governance Intelligence unavailable."));
   if(!router.routes.has("actions")) router.register("actions",()=>toast("Action Centre unavailable."));
+  if(!router.routes.has("compliance")) router.register("compliance",()=>toast("ONCA Compliance module unavailable."));
   router.start("dashboard");
   initMotionSystem();
 }

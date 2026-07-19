@@ -1,0 +1,359 @@
+{
+  "version": "1.0.0",
+  "reviewDate": "2026-07-18",
+  "sourceDocument": "2023 signed bylaws, 39 pages",
+  "disclaimer": "Governance working analysis; legal counsel should confirm final wording.",
+  "items": [
+    {
+      "id": "ONCA-001",
+      "article": "Article 1 \u2014 Name / Authority",
+      "section": "1.3",
+      "status": "amendment_required",
+      "risk": "high",
+      "title": "Modernize governing-authority and precedence clause",
+      "current": "The bylaws state only that they must conform to the 1974 Charter.",
+      "needsWork": "Add ONCA and its regulations to the authority hierarchy and state what prevails if documents conflict.",
+      "compliesWith": [
+        "ONCA s. 17\u201318 \u2014 bylaws",
+        "ONCA transition conformity",
+        "1974 Charter / articles"
+      ],
+      "evidenceRequired": [
+        "Certified copy of current articles/1974 Charter",
+        "Board and member resolution adopting amended bylaw",
+        "Final signed bylaw and Ontario filing confirmation if articles are changed"
+      ],
+      "suggestedWording": "These By-laws are subject to the Not-for-Profit Corporations Act, 2010 (Ontario), the regulations made under it, and the articles of the Corporation, including the Charter dated December 20, 1974, as amended. If there is any inconsistency, the Act and regulations prevail, followed by the articles, these By-laws, and then approved policies and resolutions.",
+      "task": "Draft and present an ONCA authority and precedence amendment."
+    },
+    {
+      "id": "ONCA-002",
+      "article": "New Article \u2014 Definitions and Interpretation",
+      "section": "Missing article",
+      "status": "missing_article",
+      "risk": "high",
+      "title": "Create definitions, interpretation and severability article",
+      "current": "No general definitions or interpretation article exists.",
+      "needsWork": "Define Act, Board, Corporation, Director, Member, Officer, writing and electronic means; add severability and gender-neutral interpretation.",
+      "compliesWith": [
+        "ONCA standard organizational bylaw reference",
+        "ONCA s. 18"
+      ],
+      "evidenceRequired": [
+        "Committee comparison against Ontario standard organizational bylaw",
+        "Draft article",
+        "Member approval record"
+      ],
+      "suggestedWording": "In these By-laws, \u201cAct\u201d means the Not-for-Profit Corporations Act, 2010 (Ontario) and its regulations, as amended. Defined terms have the meanings assigned in the Act. Words importing the singular include the plural and vice versa. The invalidity of one provision does not affect the remaining provisions.",
+      "task": "Create a new Definitions, Interpretation and Severability article."
+    },
+    {
+      "id": "ONCA-003",
+      "article": "Article 5 \u2014 Meetings",
+      "section": "5.1\u20135.11",
+      "status": "amendment_required",
+      "risk": "high",
+      "title": "Add a statutory annual meeting framework",
+      "current": "Monthly meetings are required, but no meeting is expressly designated as the annual meeting of members with mandatory annual business.",
+      "needsWork": "Designate an annual meeting and list required business, notice, financial statements, elections and public accountant decisions.",
+      "compliesWith": [
+        "ONCA s. 52 \u2014 annual meeting timing",
+        "ONCA s. 84 \u2014 financial statements to members",
+        "ONCA Part VII \u2014 audit/review engagement"
+      ],
+      "evidenceRequired": [
+        "Annual meeting notice",
+        "Approved agenda",
+        "Attendance and quorum record",
+        "Financial statements and engagement report",
+        "Election and appointment/waiver resolutions",
+        "Approved minutes"
+      ],
+      "suggestedWording": "The Corporation shall hold an annual meeting of members within the period required by the Act. At the annual meeting, members shall receive the financial statements and any auditor\u2019s or review engagement report, elect directors, appoint a public accountant or approve any lawful exemption, and transact other business properly brought before the meeting.",
+      "task": "Draft an annual meeting amendment and annual-meeting checklist."
+    },
+    {
+      "id": "ONCA-004",
+      "article": "Article 5 \u2014 Meetings",
+      "section": "5.2, 5.5, 5.8 and Article 3.5",
+      "status": "policy_and_amendment",
+      "risk": "medium",
+      "title": "Complete electronic meeting, voting and notice rules",
+      "current": "Virtual attendance and email notice are mentioned, but identity, participation, voting, technical interruption and notice instructions are not addressed.",
+      "needsWork": "Create complete electronic meeting rules and a supporting policy.",
+      "compliesWith": [
+        "ONCA electronic meeting provisions",
+        "O. Reg. 395/21 s. 10 \u2014 notice by electronic means"
+      ],
+      "evidenceRequired": [
+        "Meeting platform and access instructions",
+        "Attendance verification",
+        "Electronic vote record",
+        "Technical interruption log",
+        "Approved electronic meeting policy"
+      ],
+      "suggestedWording": "A meeting may be held entirely or partly by telephonic or electronic means that permit all participants to communicate adequately. The notice shall include access and voting instructions. The Chair shall establish reasonable procedures for identity verification, voting, technical interruptions and recording attendance.",
+      "task": "Create electronic meetings and electronic voting amendment and policy."
+    },
+    {
+      "id": "ONCA-005",
+      "article": "Article 7 \u2014 Elected Officers / Board of Directors",
+      "section": "7.1\u20137.9",
+      "status": "amendment_required",
+      "risk": "high",
+      "title": "Add director qualifications, consent, removal and resignation rules",
+      "current": "The bylaws cover election, term and vacancies but not the full statutory director lifecycle.",
+      "needsWork": "State qualifications, written consent, resignation, removal by members, loss of qualification and vacancy rules.",
+      "compliesWith": [
+        "ONCA s. 23 \u2014 qualifications",
+        "ONCA s. 24 \u2014 election/appointment",
+        "ONCA s. 25 \u2014 resignation",
+        "ONCA s. 26\u201327 \u2014 removal and statements"
+      ],
+      "evidenceRequired": [
+        "Nomination and qualification declaration",
+        "Written consent to act",
+        "Election resolution",
+        "Term register",
+        "Resignation/removal documentation",
+        "Ontario Business Registry update"
+      ],
+      "suggestedWording": "Each Director shall satisfy the qualifications in the Act and provide written consent to act. A Director may resign in writing. Members may remove a Director in accordance with the Act. A vacancy shall be filled only in a manner permitted by the Act and the Corporation shall maintain an accurate directors\u2019 register.",
+      "task": "Draft a complete director lifecycle amendment and onboarding form."
+    },
+    {
+      "id": "ONCA-006",
+      "article": "Article 8 \u2014 Duties and Responsibilities",
+      "section": "8.1\u20138.4",
+      "status": "amendment_required",
+      "risk": "high",
+      "title": "Add statutory duties and standard of care",
+      "current": "Officer job descriptions exist, but statutory fiduciary duties and the standard of care are not stated.",
+      "needsWork": "Add duties to act honestly, in good faith and in the Corporation\u2019s best interests, and the prudent-person standard.",
+      "compliesWith": [
+        "ONCA s. 43 \u2014 duties of directors and officers",
+        "ONCA s. 44 \u2014 reasonable diligence defence"
+      ],
+      "evidenceRequired": [
+        "Annual director/officer acknowledgement",
+        "Orientation record",
+        "Board education attendance",
+        "Signed code of conduct"
+      ],
+      "suggestedWording": "Every Director and Officer shall act honestly and in good faith with a view to the best interests of the Corporation and shall exercise the care, diligence and skill that a reasonably prudent person would exercise in comparable circumstances, in accordance with the Act.",
+      "task": "Draft statutory duties amendment and annual acknowledgement."
+    },
+    {
+      "id": "ONCA-007",
+      "article": "New Article \u2014 Conflict of Interest",
+      "section": "Missing article",
+      "status": "missing_article",
+      "risk": "high",
+      "title": "Create conflict-of-interest article and disclosure workflow",
+      "current": "No conflict-of-interest article or meeting procedure exists despite honorariums, contracts and investment decisions.",
+      "needsWork": "Require written disclosure, abstention, non-participation where applicable and minute documentation.",
+      "compliesWith": [
+        "ONCA s. 41 \u2014 disclosure of conflict of interest",
+        "O. Reg. 395/21 s. 7 \u2014 written disclosure"
+      ],
+      "evidenceRequired": [
+        "Annual disclosure form",
+        "Agenda-specific declaration",
+        "Minutes recording disclosure and abstention",
+        "Contract or transaction record",
+        "Board determination where applicable"
+      ],
+      "suggestedWording": "A Director or Officer who is a party to, has a material interest in, or is connected to a material contract or transaction shall disclose the nature and extent of the interest in writing as required by the Act, shall not vote on the matter, and shall comply with all participation restrictions under the Act. The disclosure and disposition shall be recorded in the minutes.",
+      "task": "Create a Conflict of Interest article, declaration form and meeting prompt."
+    },
+    {
+      "id": "ONCA-008",
+      "article": "New Article \u2014 Corporate Records and Member Access",
+      "section": "Missing article",
+      "status": "missing_article",
+      "risk": "high",
+      "title": "Create statutory corporate-records article and retention policy",
+      "current": "Secretary and Treasurer duties mention minutes and financial records but do not create a complete statutory records system.",
+      "needsWork": "List required records, custodians, access rights, retention, privacy and secure disposal.",
+      "compliesWith": [
+        "ONCA Part IX, ss. 92\u201398 \u2014 records and access",
+        "ONCA s. 84 \u2014 member financial statement access"
+      ],
+      "evidenceRequired": [
+        "Corporate records index",
+        "Directors/officers register",
+        "Members register",
+        "Minutes and resolutions",
+        "Financial records",
+        "Access request log",
+        "Retention schedule and destruction approvals"
+      ],
+      "suggestedWording": "The Corporation shall prepare and maintain all records required by the Act, including its articles and By-laws, minutes and resolutions of members, directors and committees, registers of directors, officers and members, and adequate accounting records. Access shall be provided in accordance with the Act and an approved records-retention and privacy policy.",
+      "task": "Create Corporate Records and Member Access article plus retention schedule."
+    },
+    {
+      "id": "ONCA-009",
+      "article": "Article 10\u201311 and Appendix \u2014 Budget, Financial and Auditors",
+      "section": "10, 11 and Appendix Auditors",
+      "status": "amendment_required",
+      "risk": "high",
+      "title": "Replace internal \u201cAuditors\u201d language with ONCA financial-review framework",
+      "current": "Two members act as internal Auditors. This may be a valuable internal control but is not automatically an ONCA audit or review engagement.",
+      "needsWork": "Determine public-benefit status and annual revenue thresholds each year; distinguish internal review from statutory audit/review engagement; document lawful waiver where available.",
+      "compliesWith": [
+        "ONCA Part VII, ss. 68\u201384 \u2014 public accountant and financial statements",
+        "O. Reg. 395/21 \u2014 audit/review requirements"
+      ],
+      "evidenceRequired": [
+        "Annual revenue calculation",
+        "Public-benefit corporation determination",
+        "Member resolution appointing public accountant or lawful waiver",
+        "Engagement letter",
+        "Audited/reviewed financial statements",
+        "Board approval and member presentation"
+      ],
+      "suggestedWording": "The Corporation shall prepare annual financial statements and shall appoint an auditor or person to conduct a review engagement, or approve an exemption, only as permitted by the Act. Any internal financial review committee is an additional control and shall not be represented as satisfying a statutory audit or review engagement unless legally qualified and appointed.",
+      "task": "Draft financial statements and public accountant amendment; rename internal Auditors committee."
+    },
+    {
+      "id": "ONCA-010",
+      "article": "Article 3 and Article 5 \u2014 Voting and Quorum",
+      "section": "3.2\u20133.3 and 5.7, 5.9",
+      "status": "review_required",
+      "risk": "medium",
+      "title": "Clarify chair voting and strengthen quorum",
+      "current": "The presiding officer casts a deciding vote in a tie, and member quorum is only three.",
+      "needsWork": "Clarify whether the chair has an ordinary vote, casting vote or both; consider a higher or percentage-based member quorum; verify board quorum against board size.",
+      "compliesWith": [
+        "ONCA member meeting and director meeting rules",
+        "Good governance / decision legitimacy"
+      ],
+      "evidenceRequired": [
+        "Legal review note",
+        "Membership count analysis",
+        "Board recommendation",
+        "Member amendment vote"
+      ],
+      "suggestedWording": "The Chair may vote as a member if otherwise entitled but shall not have an additional casting vote unless expressly permitted by the Act and these By-laws. Quorum for a meeting of members shall be [number or percentage] of voting members, subject to the Act.",
+      "task": "Review and amend chair voting and quorum provisions."
+    },
+    {
+      "id": "ONCA-011",
+      "article": "Article 4 and Article 6 \u2014 Membership and Dues",
+      "section": "4.1\u20134.6 and 6.1\u20136.4",
+      "status": "amendment_required",
+      "risk": "high",
+      "title": "Add member discipline, termination and procedural fairness",
+      "current": "Membership eligibility and dues arrears are addressed, but no general discipline, suspension or termination procedure exists.",
+      "needsWork": "Add grounds, notice, opportunity to respond, impartial decision and written outcome; reconcile automatic resignation language with ONCA and the Charter.",
+      "compliesWith": [
+        "ONCA s. 51 \u2014 discipline and termination procedures",
+        "1974 Charter membership restriction"
+      ],
+      "evidenceRequired": [
+        "Written notice to member",
+        "Grounds and supporting material",
+        "Member response",
+        "Decision-maker conflict check",
+        "Written decision and effective date",
+        "Membership register update"
+      ],
+      "suggestedWording": "A member may be disciplined, suspended or terminated only in accordance with a fair and reasonable procedure approved by the Board and consistent with the Act. The member shall receive written notice of the proposed action and reasons, a reasonable opportunity to respond, and written notice of the decision.",
+      "task": "Create member discipline and termination article and procedure."
+    },
+    {
+      "id": "ONCA-012",
+      "article": "New Article \u2014 Indemnification and Insurance",
+      "section": "Missing article",
+      "status": "missing_article",
+      "risk": "medium",
+      "title": "Create indemnification and directors\u2019 insurance article",
+      "current": "Insurance committee duties exist, but there is no director/officer indemnification clause.",
+      "needsWork": "Authorize indemnification and insurance only within ONCA limits and connect this to annual insurance review.",
+      "compliesWith": [
+        "ONCA s. 46 \u2014 indemnification",
+        "ONCA insurance authority"
+      ],
+      "evidenceRequired": [
+        "D&O insurance policy",
+        "Annual coverage review",
+        "Board resolution",
+        "Indemnification decision record"
+      ],
+      "suggestedWording": "Subject to the Act, the Corporation may indemnify a Director, Officer or other eligible person and may purchase and maintain insurance for their benefit. No indemnity shall be provided where the statutory conditions are not met.",
+      "task": "Create Indemnification and Insurance article."
+    },
+    {
+      "id": "ONCA-013",
+      "article": "Article 15 \u2014 Bylaw Amendments",
+      "section": "15.1",
+      "status": "amendment_required",
+      "risk": "high",
+      "title": "Reconcile amendment procedure with ONCA",
+      "current": "The current process requires notice at one meeting and a two-thirds vote at the next, but does not describe the directors\u2019 authority and member confirmation process under ONCA.",
+      "needsWork": "State the lawful process for board-made bylaws, member confirmation, rejection and effective dates; preserve any desired enhanced notice threshold only where lawful.",
+      "compliesWith": [
+        "ONCA s. 17 \u2014 bylaws and member confirmation",
+        "ONCA transition rules"
+      ],
+      "evidenceRequired": [
+        "Notice of motion",
+        "Draft amendment comparison",
+        "Board resolution where applicable",
+        "Member confirmation resolution",
+        "Signed consolidated bylaw",
+        "Amendment register update"
+      ],
+      "suggestedWording": "The Board may make, amend or repeal By-laws in accordance with the Act. Any such By-law, amendment or repeal shall be submitted to the members for confirmation, rejection or amendment within the time required by the Act. Enhanced notice or voting requirements in these By-laws apply only to the extent consistent with the Act.",
+      "task": "Draft an ONCA-compliant bylaw amendment procedure."
+    },
+    {
+      "id": "ONCA-014",
+      "article": "New Article \u2014 Member Rights and Proposals",
+      "section": "Missing article",
+      "status": "missing_article",
+      "risk": "high",
+      "title": "Create member rights, access and proposal article",
+      "current": "The bylaws describe voting eligibility but do not summarize statutory inspection, financial statement, proposal and meeting rights.",
+      "needsWork": "Add a clear rights article without attempting to restrict mandatory ONCA rights.",
+      "compliesWith": [
+        "ONCA Part V \u2014 members",
+        "ONCA s. 56 \u2014 member proposals",
+        "ONCA ss. 84, 95\u201398 \u2014 financial statements and records access"
+      ],
+      "evidenceRequired": [
+        "Member request log",
+        "Copies supplied",
+        "Proposal handling record",
+        "Meeting requisition record",
+        "Response deadlines"
+      ],
+      "suggestedWording": "Members have the rights provided by the Act, including rights relating to meetings, voting, proposals, financial statements and access to corporate records. Nothing in these By-laws shall restrict a right that the Act makes mandatory. Requests shall be processed and documented in accordance with an approved member-rights procedure.",
+      "task": "Create Member Rights and Proposals article and request workflow."
+    },
+    {
+      "id": "ONCA-015",
+      "article": "Appendix \u2014 Corporation Taxes / Schedule 546",
+      "section": "Appendix page 7 and Annex A",
+      "status": "remove_or_revalidate",
+      "risk": "high",
+      "title": "Remove or revalidate outdated tax and filing guidance",
+      "current": "The appendix relies on a 2021 phone conversation and historical Schedule 546 forms.",
+      "needsWork": "Confirm current CRA and Ontario Business Registry filing requirements; move tax guidance out of bylaws into a controlled compliance procedure with review dates.",
+      "compliesWith": [
+        "Current CRA filing requirements",
+        "Ontario Business Registry annual return requirements",
+        "Document control best practice"
+      ],
+      "evidenceRequired": [
+        "Current accountant/legal confirmation",
+        "Ontario profile report",
+        "Annual return confirmation",
+        "Tax filing confirmation",
+        "Controlled procedure approval and next review date"
+      ],
+      "suggestedWording": "Tax and corporate filing procedures shall be maintained as a separate controlled compliance policy and reviewed annually. Historical forms and informal advice shall not be treated as current legal requirements.",
+      "task": "Verify current tax and corporate filing obligations and remove outdated appendix guidance."
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "id": "compliance",
+  "name": "ONCA Compliance",
+  "version": "1.0.0",
+  "entry": "./compliance.js",
+  "enabled": true
+}

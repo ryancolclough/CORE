@@ -35,6 +35,13 @@
     "enabled": true
   },
   {
+    "id": "compliance",
+    "name": "ONCA Compliance Blueprint",
+    "version": "1.0.0",
+    "entry": "../modules/compliance/compliance.js",
+    "enabled": true
+  },
+  {
     "id": "amendment",
     "name": "Amendment Engine",
     "version": "2.0.0",

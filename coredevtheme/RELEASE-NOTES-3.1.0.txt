@@ -1,0 +1,12 @@
+CORE 3.1.0 — ONCA Compliance Blueprint
+Build 20260718.401
+
+Added:
+- 15-item ONCA compliance register based on the complete 2023 signed bylaws
+- Missing-article detection and automatic By-Law Committee tasks
+- Current state, required work, governing authority, evidence and suggested wording fields
+- Filters for missing articles, amendments and risk
+- Idempotent task creation in Action Centre
+- Dashboard ONCA Blueprint card and quick action
+
+Important: This is a governance working analysis, not a legal opinion. Final amendments should be reviewed before adoption.

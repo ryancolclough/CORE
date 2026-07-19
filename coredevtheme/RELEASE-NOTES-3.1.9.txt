@@ -1,0 +1,8 @@
+CORE 3.1.9 — Layout Builder Scroll & Draft State Fix
+Build 20260718.419
+
+- Card Library now scrolls inside its own panel without chaining into the page.
+- Adding, removing, resizing, or reordering a card preserves the library and page scroll positions.
+- The unfinished layout is autosaved after every change so a render, route refresh, or browser repaint cannot return cards to the library.
+- Desktop/Mobile preview mode is preserved while editing.
+- Discard clears the saved draft; Publish clears it after the dashboard is updated.

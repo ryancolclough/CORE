@@ -6,13 +6,42 @@ export default function register(ctx){
 
   async function load(){
     if(DATA)return DATA;
-    DATA=await fetch('data/onca-compliance.json?v=20260718.414',{cache:'no-store'}).then(r=>r.json());
+    DATA=await fetch('data/onca-compliance.json?v=20260718.415',{cache:'no-store'}).then(r=>r.json());
     seedTasks();
     return DATA;
   }
+  function nextUniqueActionId(items, usedIds){
+    let n=1;
+    let id;
+    do{
+      id=`ACT-${state.reviewYear}-${String(n++).padStart(4,'0')}`;
+    }while(usedIds.has(id));
+    usedIds.add(id);
+    return id;
+  }
+
+  function repairDuplicateComplianceIds(current){
+    const usedIds=new Set();
+    let changed=false;
+    current.forEach(action=>{
+      const duplicate=!action.id || usedIds.has(action.id);
+      if(duplicate && action.complianceId){
+        action.id=nextUniqueActionId(current,usedIds);
+        action.history=Array.isArray(action.history)?action.history:[];
+        action.history.push({date:new Date().toISOString(),event:'Action ID repaired',note:`Assigned a unique Action Centre ID to ${action.complianceId}.`});
+        changed=true;
+      }else if(action.id){
+        usedIds.add(action.id);
+      }
+    });
+    return {changed,usedIds};
+  }
+
   function seedTasks(){
     const current=state.actionItems();
-    let changed=false;
+    const repaired=repairDuplicateComplianceIds(current);
+    const usedIds=repaired.usedIds;
+    let changed=repaired.changed;
     DATA.items.forEach(item=>{
       const detail={
         complianceId:item.id,
@@ -42,7 +71,7 @@ ${item.needsWork}`;
         if(existing.description!==fullDescription){existing.description=fullDescription;changed=true;}
         return;
       }
-      current.push({id:state.nextActionId(),title:item.task,description:`WHY THIS MATTERS:
+      current.push({id:nextUniqueActionId(current,usedIds),title:item.task,description:`WHY THIS MATTERS:
 ${item.reasoning}
 
 WHERE IT GOES:

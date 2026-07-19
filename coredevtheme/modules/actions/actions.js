@@ -9,7 +9,7 @@ export default function register(ctx){
   // Saved Action Centre records are assignments/status only; they are never the legal-analysis source of truth.
   function loadComplianceData(){
     if(!complianceDataPromise){
-      complianceDataPromise = fetch("data/onca-compliance.json?v=20260718.414", {cache:"no-store"})
+      complianceDataPromise = fetch("data/onca-compliance.json?v=20260718.415", {cache:"no-store"})
         .then(response => {
           if(!response.ok) throw new Error(`Compliance register failed to load (${response.status})`);
           return response.json();

@@ -1,4 +1,4 @@
-CORE 3.1.4 — Live Article Comparison
+CORE 3.1.5 — Live Article Comparison
 
 - Action Centre compliance records now load directly from the live ONCA comparison register by ONCA ID.
 - Existing saved tasks can no longer hide or replace the unique comparison reasoning.

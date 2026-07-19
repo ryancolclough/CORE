@@ -1,0 +1,7 @@
+CORE 3.1.5 — UNIQUE COMPLIANCE TASK FIX
+Build 20260718.415
+
+- Repairs duplicate Action Centre IDs created while seeding the 15 ONCA tasks.
+- Each compliance task now opens its own ONCA record instead of every button resolving to the first task.
+- Existing saved tasks are migrated in place and assigned unique IDs.
+- New compliance tasks are generated with unique IDs before the state is saved.

@@ -1,0 +1,7 @@
+CORE 3.1.4 — Live Article Comparison
+
+- Action Centre compliance records now load directly from the live ONCA comparison register by ONCA ID.
+- Existing saved tasks can no longer hide or replace the unique comparison reasoning.
+- Adds exact insertion location, signed-bylaw page reference, current wording/condition, authority, evidence, work steps, completion test and suggested wording.
+- Automatically hydrates the 15 existing tasks without creating duplicates.
+- Bumps the PWA cache so the corrected module is fetched.

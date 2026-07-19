@@ -3,6 +3,62 @@ import { escapeHTML } from "../../sdk/ui.js";
 export default function register(ctx){
   const { router, state, renderShell, toast, events, dialogs, storage } = ctx;
   let currentFilter = "active";
+  let complianceDataPromise = null;
+
+  // Compliance actions always resolve their detail from the live comparison register.
+  // Saved Action Centre records are assignments/status only; they are never the legal-analysis source of truth.
+  function loadComplianceData(){
+    if(!complianceDataPromise){
+      complianceDataPromise = fetch("data/onca-compliance.json?v=20260718.414", {cache:"no-store"})
+        .then(response => {
+          if(!response.ok) throw new Error(`Compliance register failed to load (${response.status})`);
+          return response.json();
+        });
+    }
+    return complianceDataPromise;
+  }
+
+  function mapComplianceRecord(record){
+    if(!record) return {};
+    return {
+      complianceId:record.id,
+      complianceTitle:record.title,
+      bylawLocation:record.article + (record.section ? ` · ${record.section}` : ""),
+      proposedPlacement:record.proposedPlacement,
+      reasoning:record.reasoning,
+      currentState:record.current,
+      currentExcerpt:record.currentExcerpt,
+      sourcePage:record.sourcePage,
+      needsWork:record.needsWork,
+      compliesWith:record.compliesWith,
+      evidenceRequired:record.evidenceRequired,
+      suggestedWording:record.suggestedWording,
+      workSteps:record.workSteps,
+      completionCriteria:record.completionCriteria
+    };
+  }
+
+  async function hydrateComplianceTasks(){
+    try{
+      const data = await loadComplianceData();
+      const items = state.actionItems();
+      let changed = false;
+      items.forEach(item => {
+        if(!item.complianceId) return;
+        const record = data.items?.find(entry => entry.id === item.complianceId);
+        if(!record) return;
+        const live = mapComplianceRecord(record);
+        Object.entries(live).forEach(([key,value]) => {
+          if(JSON.stringify(item[key]) !== JSON.stringify(value)){ item[key] = value; changed = true; }
+        });
+      });
+      if(changed) state.saveActionItems(items);
+    }catch(error){
+      console.error("CORE compliance hydration failed", error);
+    }
+  }
+
+  hydrateComplianceTasks();
 
   router.register("actions", () => renderActions(currentFilter));
 
@@ -182,19 +238,50 @@ export default function register(ctx){
       </article>`;
   }
 
-  function openActionDetail(id){
-    const item=state.actionItems().find(x=>x.id===id);
-    if(!item) return;
+  async function openActionDetail(id){
+    const savedItem=state.actionItems().find(x=>x.id===id);
+    if(!savedItem) return;
+
+    let item={...savedItem};
+    let liveLoaded=false;
+    let loadError="";
+    if(savedItem.complianceId){
+      try{
+        const data=await loadComplianceData();
+        const record=data.items?.find(entry=>entry.id===savedItem.complianceId);
+        if(record){
+          item={...savedItem,...mapComplianceRecord(record)};
+          liveLoaded=true;
+        }else{
+          loadError=`No matching comparison record was found for ${savedItem.complianceId}.`;
+        }
+      }catch(error){
+        loadError="The live comparison register could not be loaded. Refresh CORE and try again.";
+        console.error(error);
+      }
+    }
+
     const list=value=>Array.isArray(value)&&value.length?`<ul>${value.map(x=>`<li>${escapeHTML(x)}</li>`).join("")}</ul>`:`<p>Not recorded.</p>`;
+    const sourceLine=[item.bylawLocation,item.sourcePage?`Signed bylaws: ${item.sourcePage}`:""] .filter(Boolean).join(" · ");
     dialogs.open(`${escapeHTML(item.complianceId||item.id)} · Compliance Work Record`, `
       <div class="action-modal compliance-task-detail">
-        <div class="compliance-meta"><span class="compliance-pill">${escapeHTML(item.bylawLocation||item.sourceReference||"")}</span><span class="compliance-pill">${escapeHTML(item.priority||"medium").toUpperCase()} PRIORITY</span></div>
+        <div class="compliance-meta">
+          <span class="compliance-pill">${escapeHTML(sourceLine||item.sourceReference||"")}</span>
+          <span class="compliance-pill">${escapeHTML(item.priority||"medium").toUpperCase()} PRIORITY</span>
+          ${item.complianceId?`<span class="compliance-pill">${liveLoaded?"LIVE COMPARISON LOADED":"COMPARISON LOAD ERROR"}</span>`:""}
+        </div>
+        ${loadError?`<section class="compliance-box"><h4>Comparison error</h4><p>${escapeHTML(loadError)}</p></section>`:""}
         <h3>${escapeHTML(item.complianceTitle||item.title)}</h3>
-        <section class="compliance-box"><h4>Why this change is needed</h4><p>${escapeHTML(item.reasoning||item.description||"")}</p></section>
-        <section class="compliance-box"><h4>Where it should be added</h4><p>${escapeHTML(item.proposedPlacement||"Placement not recorded.")}</p></section>
-        <section class="compliance-box"><h4>Current bylaw condition</h4><p>${escapeHTML(item.currentState||"")}</p></section>
-        <section class="compliance-box"><h4>What must change</h4><p>${escapeHTML(item.needsWork||"")}</p></section>
-        <div class="compliance-grid"><section class="compliance-box"><h4>Authority / compliance target</h4>${list(item.compliesWith)}</section><section class="compliance-box"><h4>Evidence to retain</h4>${list(item.evidenceRequired)}</section><section class="compliance-box"><h4>Committee work steps</h4>${list(item.workSteps)}</section><section class="compliance-box"><h4>When this task is truly complete</h4>${list(item.completionCriteria)}</section></div>
+        <section class="compliance-box"><h4>Why this specific change is needed</h4><p>${escapeHTML(item.reasoning||item.description||"")}</p></section>
+        <section class="compliance-box"><h4>Exact bylaw location / insertion point</h4><p>${escapeHTML(item.proposedPlacement||"The live comparison record did not supply a placement.")}</p></section>
+        <section class="compliance-box"><h4>Current signed-bylaw condition</h4><p>${escapeHTML(item.currentState||"Not recorded.")}</p>${item.currentExcerpt?`<div class="suggested-wording"><strong>Current wording:</strong><br>${escapeHTML(item.currentExcerpt)}</div>`:""}</section>
+        <section class="compliance-box"><h4>What must change</h4><p>${escapeHTML(item.needsWork||"Not recorded.")}</p></section>
+        <div class="compliance-grid">
+          <section class="compliance-box"><h4>Authority / compliance target</h4>${list(item.compliesWith)}</section>
+          <section class="compliance-box"><h4>Evidence the committee must retain</h4>${list(item.evidenceRequired)}</section>
+          <section class="compliance-box"><h4>Step-by-step committee work</h4>${list(item.workSteps)}</section>
+          <section class="compliance-box"><h4>Completion test</h4>${list(item.completionCriteria)}</section>
+        </div>
         <section class="compliance-box"><h4>Suggested draft wording</h4><div class="suggested-wording">${escapeHTML(item.suggestedWording||"No draft wording recorded.")}</div></section>
         <div class="actions"><button class="btn" type="button" data-edit-action="${escapeHTML(item.id)}">Edit Assignment</button><button class="btn secondary" type="button" data-route="compliance">Open Full Compliance Register</button><button class="btn secondary" type="button" data-modal-cancel-action>Close</button></div>
       </div>`);

@@ -1,5 +1,5 @@
 CORE 3.1.6 — MODAL SCROLL FIX
-Build 20260718.416
+Build 20260718.417
 
 FIXED
 - Reasoning & Draft modal now scrolls independently on iPhone/iPad and installed PWA mode.

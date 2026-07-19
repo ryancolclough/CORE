@@ -1,0 +1,10 @@
+CORE 3.1.7 — FULL-PAGE COMPLIANCE RECORD
+Build 20260718.417
+
+Fixes the iOS/PWA interaction defect where the Reasoning & Draft modal closed when touched or swiped.
+
+Reasoning & Draft now opens as a dedicated, normally scrollable CORE page. It no longer uses the modal layer, so:
+- tapping text cannot close the record;
+- normal page swiping and browser scrolling work;
+- the full record can be read on iPhone;
+- Back to Action Centre is always available at the top and bottom.

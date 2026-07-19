@@ -6,7 +6,7 @@ export default function register(ctx){
 
   async function load(){
     if(DATA)return DATA;
-    DATA=await fetch('data/onca-compliance.json?v=20260718.416',{cache:'no-store'}).then(r=>r.json());
+    DATA=await fetch('data/onca-compliance.json?v=20260718.417',{cache:'no-store'}).then(r=>r.json());
     seedTasks();
     return DATA;
   }

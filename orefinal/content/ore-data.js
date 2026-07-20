@@ -10,7 +10,10 @@ window.ORE_DATA = {
     "established": "1843",
     "publicationId": "CPMTC-BYLAWS-1.0",
     "president": "Greg Forsyth",
-    "secretary": "To be confirmed"
+    "secretary": "Andrew Valley",
+    "vicePresident": "To be confirmed",
+    "treasurer": "Mark Dorland",
+    "developer": "Ryan Colclough"
   },
   "frontMatter": {
     "certification": [
@@ -65,7 +68,7 @@ window.ORE_DATA = {
       "version": "1.0",
       "date": "July 2026",
       "president": "Greg Forsyth",
-      "secretary": "To be confirmed",
+      "secretary": "Andrew Valley",
       "status": "Current certified edition"
     }
   ],

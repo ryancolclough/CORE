@@ -52,8 +52,15 @@
       <div class="page-label">Certification</div><div class="kicker">of Official Edition</div><h2>Certification</h2><div class="gold-rule"></div>
       <div class="body-copy">${data.frontMatter.certification.map(p => `<p>${p}</p>`).join('')}</div>
       <div class="signature-block">
-        <div class="signature-line"><strong>${data.meta.president}</strong><em>Temple Board President</em></div>
-        <div class="signature-line"><strong>${data.meta.secretary}</strong><em>Secretary</em></div>
+        <div class="signature-row signature-row-top">
+          <div class="signature-line"><strong>${data.meta.president}</strong><em>Temple Board President</em></div>
+          <div class="signature-line"><strong>${data.meta.vicePresident}</strong><em>Vice President</em></div>
+          <div class="signature-line"><strong>${data.meta.treasurer}</strong><em>Treasurer</em></div>
+        </div>
+        <div class="signature-row signature-row-bottom">
+          <div class="signature-line"><strong>${data.meta.developer}</strong><em>ORE &amp; CORE Developer</em></div>
+          <div class="signature-line"><strong>${data.meta.secretary}</strong><em>Secretary</em></div>
+        </div>
       </div>
     </div></div></section>`;
 
@@ -76,6 +83,17 @@
 
   const pageOrder = ['cover', 'certification', 'document-control', 'publisher-note', 'contents', 'bylaws-contents'];
   const sectionRoutes = new Map();
+  const getCommitteeStaffing = committee => {
+    const currentCount = (committee.members?.length || 0);
+    const target = Number(committee.targetMembers || 0);
+    const filled = target > 0 && currentCount >= target;
+    const halfOrMore = target > 0 && currentCount > 0 && currentCount * 2 >= target;
+    if (filled) return { currentCount, target, vacancies: 0, state: 'green', label: 'Fully staffed', availability: 'Fully staffed · No vacancies' };
+    const vacancies = Math.max(target - currentCount, 0);
+    if (halfOrMore) return { currentCount, target, vacancies, state: 'yellow', label: 'Half staffed', availability: `Half staffed · ${vacancies} position${vacancies === 1 ? '' : 's'} available` };
+    return { currentCount, target, vacancies, state: 'red', label: 'Needs full staff', availability: `Needs full staff · ${vacancies} position${vacancies === 1 ? '' : 's'} available` };
+  };
+
 
   const articleMarkup = data.articles.map((article, articleIndex) => {
     const aid = articleId(article);
@@ -121,14 +139,17 @@
     return opener + sectionScreens;
   }).join('');
 
-  const committeeRows = data.committees.map(committee => `<a class="nav-row" href="#committee-${committee.id}"><span class="committee-status ${committee.status.toLowerCase()}"></span><span><b>${committee.name}</b><small>${committee.status} · ${committee.vacancies ?? committee.targetMembers} position${(committee.vacancies ?? committee.targetMembers) === 1 ? '' : 's'} available</small></span><span class="chev">›</span></a>`).join('');
+  const committeeRows = data.committees.map(committee => { const staffing = getCommitteeStaffing(committee); committee.vacancies = staffing.vacancies; committee.staffState = staffing.state; committee.staffLabel = staffing.label; committee.currentCount = staffing.currentCount; return `<a class="nav-row" href="#committee-${committee.id}"><span class="committee-status ${staffing.state}" title="${staffing.label}"></span><span><b>${committee.name}</b><small>${staffing.availability}</small></span><span class="chev">›</span></a>`; }).join('');
   const governanceLibrary = `<section id="governance-library" class="screen"><div class="page"><div class="page-inner"><div class="page-label">Part II</div><h2>Governance &<br>Committees</h2><div class="gold-rule"></div><div class="records-list"><a class="nav-row" href="#committees"><span></span><span><b>Standing Committees</b><small>Current rosters, vacancies, mandates, and projects</small></span><span class="chev">›</span></a><a class="nav-row" href="#article-viii-contents"><span></span><span><b>Board Responsibilities</b><small>Duties and responsibilities under the By-Laws</small></span><span class="chev">›</span></a><a class="nav-row" href="#article-ix-contents"><span></span><span><b>Committee Provisions</b><small>Standing, ad hoc, membership, reports, and terms of reference</small></span><span class="chev">›</span></a></div></div></div></section>`;
   const committees = `<section id="committees" class="screen"><div class="page"><div class="page-inner"><div class="page-label">Standing Committees</div><h2>Committees</h2><div class="gold-rule"></div><p class="intro-copy">The Temple Board is strengthening its committees. Each page identifies the committee’s purpose, current roster, open positions, responsibilities, and active priorities.</p><div class="committee-list">${committeeRows}</div></div></div></section>`;
   const committeePages = data.committees.map(committee => {
-    const currentCount = committee.members.length;
-    const vacancies = Math.max(committee.targetMembers - currentCount, 0);
+    const staffing = getCommitteeStaffing(committee);
+    const currentCount = staffing.currentCount;
+    const vacancies = staffing.vacancies;
     committee.vacancies = vacancies;
-    return `<section id="committee-${committee.id}" class="screen searchable committee-page" data-search="committee ${committee.name} ${committee.mandate} ${committee.responsibilities.join(' ')} ${committee.projects.join(' ')} recruiting volunteer"><div class="page"><div class="page-inner"><div class="crumbs"><a href="#contents">Library</a><span>›</span><a href="#governance-library">Governance</a><span>›</span><a href="#committees">Committees</a></div><div class="page-label">Standing Committee</div><h2>${committee.name}</h2><div class="gold-rule"></div><div class="committee-summary"><div><span>Chair</span><strong>${committee.chair}</strong></div><div><span>Term</span><strong>${committee.term}</strong></div><div><span>Current Members</span><strong>${currentCount} / ${committee.targetMembers}</strong></div><div><span>Status</span><strong class="recruiting-text">${vacancies > 0 ? `Recruiting ${vacancies}` : 'Fully staffed'}</strong></div></div><div class="committee-section"><h3>Purpose</h3><p>${committee.mandate}</p></div><div class="committee-section"><h3>Current Roster</h3>${committee.members.length ? `<ul>${committee.members.map(member => `<li>${member}</li>`).join('')}</ul>` : '<p class="vacancy-note">Additional committee members are required. Names can be added here as appointments are confirmed.</p>'}</div><div class="committee-section"><h3>Responsibilities</h3><ul>${committee.responsibilities.map(item => `<li>${item}</li>`).join('')}</ul></div><div class="committee-section"><h3>Current Priorities</h3><ul>${committee.projects.map(item => `<li>${item}</li>`).join('')}</ul></div><div class="recruitment-panel"><span>Interested in helping?</span><strong>${vacancies > 0 ? `${vacancies} committee position${vacancies === 1 ? '' : 's'} currently available` : 'This committee is currently fully staffed'}</strong>${vacancies > 0 ? '<a href="#forms" class="text-action">Open Committee Interest Form ›</a>' : ''}</div></div></div></section>`;
+    committee.staffState = staffing.state;
+    committee.staffLabel = staffing.label;
+    return `<section id="committee-${committee.id}" class="screen searchable committee-page" data-search="committee ${committee.name} ${committee.mandate} ${committee.responsibilities.join(' ')} ${committee.projects.join(' ')} recruiting volunteer"><div class="page"><div class="page-inner"><div class="crumbs"><a href="#contents">Library</a><span>›</span><a href="#governance-library">Governance</a><span>›</span><a href="#committees">Committees</a></div><div class="page-label">Standing Committee</div><h2>${committee.name}</h2><div class="gold-rule"></div><div class="committee-summary"><div><span>Chair</span><strong>${committee.chair}</strong></div><div><span>Term</span><strong>${committee.term}</strong></div><div><span>Current Members</span><strong>${currentCount} / ${committee.targetMembers}</strong></div><div><span>Status</span><strong class="recruiting-text ${staffing.state}">${staffing.label}</strong></div></div><div class="committee-section"><h3>Purpose</h3><p>${committee.mandate}</p></div><div class="committee-section"><h3>Current Roster</h3>${committee.members.length ? `<ul>${committee.members.map(member => `<li>${member}</li>`).join('')}</ul>` : '<p class="vacancy-note">Additional committee members are required. Names can be added here as appointments are confirmed.</p>'}</div><div class="committee-section"><h3>Responsibilities</h3><ul>${committee.responsibilities.map(item => `<li>${item}</li>`).join('')}</ul></div><div class="committee-section"><h3>Current Priorities</h3><ul>${committee.projects.map(item => `<li>${item}</li>`).join('')}</ul></div><div class="recruitment-panel"><span>Interested in helping?</span><strong>${vacancies > 0 ? `${vacancies} committee position${vacancies === 1 ? '' : 's'} currently available` : 'This committee is currently fully staffed'}</strong>${vacancies > 0 ? '<a href="#forms" class="text-action">Open Committee Interest Form ›</a>' : ''}</div></div></div></section>`;
   }).join('');
   const corporateRecords = `<section id="corporate-records" class="screen"><div class="page"><div class="page-inner"><div class="page-label">Part III</div><h2>Corporate<br>Records</h2><div class="gold-rule"></div><div class="records-list"><a class="nav-row" href="pdf/official-bylaws-2023.pdf" target="_blank"><span></span><span><b>Original Signed By-Laws</b><small>Official signed 2023 document</small></span><span class="chev">›</span></a><a class="nav-row" href="#document-control"><span></span><span><b>Document Control</b><small>Edition, publication, and certification information</small></span><span class="chev">›</span></a><div class="nav-row unavailable"><span></span><span><b>Articles of Incorporation</b><small>File to be added</small></span><span></span></div><div class="nav-row unavailable"><span></span><span><b>Directors Register</b><small>Current and historical records to be added</small></span><span></span></div></div></div></div></section>`;
   const forms = `<section id="forms" class="screen"><div class="page"><div class="page-inner"><div class="page-label">Part IV</div><h2>Official<br>Forms</h2><div class="gold-rule"></div><div class="records-list">${data.forms.map(form => form.type === 'interactive' ? `<button class="nav-row form-open" data-form="${form.id}"><span></span><span><b>${form.name}</b><small>${form.description}</small></span><span class="chev">›</span></button>` : `<div class="nav-row unavailable"><span></span><span><b>${form.name}</b><small>${form.description} · File to be added</small></span><span></span></div>`).join('')}</div></div></div></section>`;

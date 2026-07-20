@@ -1,4 +1,4 @@
-const VERSION = "ore-v1.0.3-cover-center-20260720";
+const VERSION = "ore-v1.0.4-committee-grid-20260720";
 const CACHE = `${VERSION}-static`;
 const APP_ROOT = new URL("./", self.location.href);
 const ASSETS = [

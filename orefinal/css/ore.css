@@ -210,3 +210,25 @@ h2{font-weight:400;text-align:center;letter-spacing:.035em;font-size:clamp(34px,
     margin:auto;
   }
 }
+
+/* ORE v0.8 — two-column committee directory on desktop */
+@media (min-width:900px){
+  .committee-list{
+    max-width:1080px;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    column-gap:44px;
+    row-gap:0;
+    border-top:0;
+    background:transparent;
+  }
+  .committee-list .nav-row{
+    min-height:92px;
+    padding:18px 10px;
+    border-top:1px solid var(--line);
+    background:var(--paper);
+  }
+  .committee-list .nav-row:nth-last-child(-n+2){
+    border-bottom:1px solid var(--line);
+  }
+}

@@ -1,4 +1,4 @@
-const VERSION = "ore-v1.0.1-icon-20260720";
+const VERSION = "ore-v1.0.2-desktop-20260720";
 const CACHE = `${VERSION}-static`;
 const APP_ROOT = new URL("./", self.location.href);
 const ASSETS = [
@@ -13,6 +13,7 @@ const ASSETS = [
   "./js/core.js",
   "./data/core-reviews.json",
   "./assests/emblem.svg",
+  "./assets/emblem.svg",
   "./assets/icons/apple-touch-icon.png",
   "./assets/icons/ore-192.png",
   "./assets/icons/ore-512.png",

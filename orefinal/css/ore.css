@@ -193,3 +193,20 @@ h2{font-weight:400;text-align:center;letter-spacing:.035em;font-size:clamp(34px,
   .section-reader .local-pager a:last-child{justify-self:end}
   .section-reader .edge-cue{display:none}
 }
+
+/* ORE v0.7 — desktop cover centering fix */
+.screen.cover.active{
+  display:grid;
+  place-items:center;
+}
+@media (min-width:900px){
+  .screen.cover.active{
+    min-height:100svh;
+    width:100%;
+    align-items:center;
+    justify-items:center;
+  }
+  .cover-inner{
+    margin:auto;
+  }
+}

@@ -1,4 +1,4 @@
-const VERSION = "ore-v1.0.6-fit-pages-20260720";
+const VERSION = "ore-v1.0.7-certificate-polish-20260720";
 const CACHE = `${VERSION}-static`;
 const APP_ROOT = new URL("./", self.location.href);
 const ASSETS = [

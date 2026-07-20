@@ -48,18 +48,28 @@
     </section>`;
 
   const certification = `
-    <section id="certification" class="screen"><div class="page"><div class="page-inner">
-      <div class="page-label">Certification</div><div class="kicker">of Official Edition</div><h2>Certification</h2><div class="gold-rule"></div>
-      <div class="body-copy">${data.frontMatter.certification.map(p => `<p>${p}</p>`).join('')}</div>
-      <div class="signature-block">
-        <div class="signature-row signature-row-top">
-          <div class="signature-line"><strong>${data.meta.president}</strong><em>Temple Board President</em></div>
-          <div class="signature-line"><strong>${data.meta.vicePresident}</strong><em>Vice President</em></div>
-          <div class="signature-line"><strong>${data.meta.treasurer}</strong><em>Treasurer</em></div>
+    <section id="certification" class="screen"><div class="page certificate-page"><div class="page-inner certificate-sheet">
+      <div class="certificate-frame">
+        <div class="certificate-crest">${data.meta.editionShort}</div>
+        <div class="certificate-kicker">Certificate of Official Edition</div>
+        <h2>Certification</h2>
+        <div class="gold-rule"></div>
+        <div class="certificate-corporation">${data.meta.corporation}</div>
+        <div class="body-copy cert-copy">${data.frontMatter.certification.map(p => `<p>${p}</p>`).join('')}</div>
+        <div class="signature-block certificate-signatures">
+          <div class="signature-row signature-row-top">
+            <div class="signature-line"><strong>${data.meta.president}</strong><em>Temple Board President</em></div>
+            <div class="signature-line"><strong>${data.meta.vicePresident}</strong><em>Vice President</em></div>
+            <div class="signature-line"><strong>${data.meta.treasurer}</strong><em>Treasurer</em></div>
+          </div>
+          <div class="signature-row signature-row-bottom">
+            <div class="signature-line"><strong>${data.meta.developer}</strong><em>ORE &amp; CORE Developer</em></div>
+            <div class="signature-line"><strong>${data.meta.secretary}</strong><em>Secretary</em></div>
+          </div>
         </div>
-        <div class="signature-row signature-row-bottom">
-          <div class="signature-line"><strong>${data.meta.developer}</strong><em>ORE &amp; CORE Developer</em></div>
-          <div class="signature-line"><strong>${data.meta.secretary}</strong><em>Secretary</em></div>
+        <div class="seal-block" aria-label="Seal placement">
+          <div class="seal-mark"></div>
+          <div class="seal-caption">Space Reserved for Corporate Seal / Wax Seal</div>
         </div>
       </div>
     </div></div></section>`;

@@ -295,81 +295,97 @@ h2{font-weight:400;text-align:center;letter-spacing:.035em;font-size:clamp(34px,
     font-size:17px;
   }
 
-  /* Certification: compact only this page so all five signatures remain visible. */
-  #certification{
-    overflow:hidden;
+/* ORE v1.0.6 — fit cover and certification fully in desktop viewport */
+@media (min-width:900px){
+  .cover .cover-inner{max-width:860px}
+  .cover-emblem{width:86px;height:86px;margin-bottom:16px}
+  .cover-org{font-size:clamp(14px,1.15vw,18px)}
+  .cover h1{font-size:clamp(62px,6.4vw,90px);margin:20px 0 16px}
+  .cover-sub{font-size:clamp(18px,1.9vw,26px)}
+  .cover-meta{margin-top:18px;padding:10px 20px;font-size:11px}
+  .begin{margin-top:18px}
+  .begin span{width:40px;height:40px}
+
+  #certification .page{padding-top:18px;padding-bottom:calc(var(--dock-h) + 16px);display:grid;align-items:center}
+  #certification .page-inner{max-width:980px}
+  #certification .certificate-frame{
+    border:1px solid #d9ccb1;
+    box-shadow:inset 0 0 0 4px #f7f3ea, 0 10px 28px rgba(0,0,0,.06);
+    background:linear-gradient(180deg,#fffdfa 0%,#fffefb 100%);
+    padding:22px 34px 18px;
+    text-align:center;
   }
-  #certification .page{
-    height:100svh;
-    min-height:100svh;
-    padding-top:24px;
-    padding-bottom:calc(var(--dock-h) + 16px);
-    display:flex;
-    align-items:center;
+  #certification .certificate-crest{
+    width:44px;height:44px;margin:0 auto 8px;border:1px solid rgba(170,124,44,.5);border-radius:50%;
+    display:grid;place-items:center;color:var(--gold);font-size:14px;letter-spacing:.12em;text-transform:uppercase;
   }
-  #certification .page-inner{
-    max-width:1080px;
+  #certification .certificate-kicker{
+    text-transform:uppercase;letter-spacing:.22em;font-size:11px;color:#5d554a;margin-bottom:8px;
   }
-  #certification .page-label{
-    margin-bottom:10px;
-    font-size:9px;
+  #certification h2{font-size:clamp(38px,3.8vw,50px);margin-bottom:8px}
+  #certification .gold-rule{margin:10px auto 16px}
+  #certification .certificate-corporation{
+    text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--gold);margin-bottom:12px;
   }
-  #certification .kicker{
-    margin-bottom:6px;
-    font-size:11px;
+  #certification .cert-copy{max-width:760px;font-size:14px;line-height:1.52}
+  #certification .cert-copy p{margin-bottom:10px}
+  #certification .certificate-signatures{max-width:860px;margin-top:18px;gap:14px}
+  #certification .signature-row{display:grid;justify-content:center}
+  #certification .signature-row-top{grid-template-columns:repeat(3,minmax(0,240px));gap:18px}
+  #certification .signature-row-bottom{grid-template-columns:repeat(2,minmax(0,260px));gap:26px}
+  #certification .signature-line{min-height:64px;padding-top:8px;text-align:left}
+  #certification .signature-line strong{font-size:15px;font-weight:600}
+  #certification .signature-line em{font-size:11px;letter-spacing:.04em}
+  #certification .seal-block{margin-top:14px;display:grid;justify-items:center;gap:8px}
+  #certification .seal-mark{
+    width:74px;height:74px;border:1.4px dashed rgba(170,124,44,.55);border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,rgba(209,170,90,.08),transparent 45%);
   }
-  #certification h2{
-    font-size:clamp(36px,4vw,52px);
-    margin-bottom:8px;
-  }
-  #certification .gold-rule{
-    margin:12px auto 22px;
-  }
-  #certification .body-copy{
-    max-width:760px;
-    font-size:15px;
-    line-height:1.5;
-  }
-  #certification .body-copy p{
-    margin-bottom:12px;
-  }
-  #certification .signature-block{
-    max-width:1040px;
-    margin-top:22px;
-    gap:18px;
-  }
-  #certification .signature-row{
-    gap:22px;
-  }
-  #certification .signature-line{
-    min-height:76px;
-    padding-top:10px;
-  }
-  #certification .signature-line strong{
-    font-size:15px;
-  }
-  #certification .signature-line em{
-    font-size:12px;
-  }
+  #certification .seal-caption{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#6c6459}
 }
 
 /* Extra compression for shorter desktop/laptop screens. */
 @media (min-width:900px) and (max-height:760px){
-  .cover-emblem{width:70px;height:70px;margin-bottom:10px}
-  .cover h1{font-size:clamp(48px,6.1vw,78px);margin:14px 0 10px}
+  .cover-emblem{width:74px;height:74px;margin-bottom:12px}
+  .cover h1{font-size:clamp(54px,5.8vw,80px);margin:16px 0 12px}
   .cover-sub{font-size:18px}
-  .cover-meta{margin-top:12px;padding:8px 16px}
-  .begin{margin-top:10px}
-  .begin span{width:34px;height:34px}
+  .cover-meta{margin-top:14px;padding:8px 16px}
+  .begin{margin-top:12px}
+  .begin span{width:36px;height:36px}
 
-  #certification .page{padding-top:14px;padding-bottom:calc(var(--dock-h) + 10px)}
+  #certification .page{padding-top:12px;padding-bottom:calc(var(--dock-h) + 8px)}
+  #certification .certificate-frame{padding:16px 26px 12px}
+  #certification .certificate-crest{width:38px;height:38px;margin-bottom:6px;font-size:12px}
+  #certification .certificate-kicker{font-size:10px;margin-bottom:6px}
   #certification h2{font-size:40px}
-  #certification .gold-rule{margin:8px auto 14px}
-  #certification .body-copy{font-size:13.5px;line-height:1.38}
-  #certification .body-copy p{margin-bottom:8px}
-  #certification .signature-block{margin-top:14px;gap:12px}
-  #certification .signature-row{gap:16px}
-  #certification .signature-line{min-height:58px;padding-top:7px}
+  #certification .gold-rule{margin:8px auto 12px}
+  #certification .certificate-corporation{font-size:11px;margin-bottom:10px}
+  #certification .cert-copy{font-size:13px;line-height:1.42;max-width:720px}
+  #certification .cert-copy p{margin-bottom:7px}
+  #certification .certificate-signatures{margin-top:12px;gap:10px}
+  #certification .signature-row-top{grid-template-columns:repeat(3,minmax(0,220px));gap:16px}
+  #certification .signature-row-bottom{grid-template-columns:repeat(2,minmax(0,240px));gap:22px}
+  #certification .signature-line{min-height:54px;padding-top:6px}
   #certification .signature-line strong{font-size:13px}
   #certification .signature-line em{font-size:10px}
+  #certification .seal-block{margin-top:10px;gap:6px}
+  #certification .seal-mark{width:60px;height:60px}
+  #certification .seal-caption{font-size:10px}
+}
+
+@media (max-width:720px){
+  #certification .certificate-frame{border:1px solid #e2d7bf;padding:18px 16px 16px;background:#fffdfa}
+  #certification .certificate-crest{width:38px;height:38px;margin:0 auto 8px;border:1px solid rgba(170,124,44,.45);border-radius:50%;display:grid;place-items:center;color:var(--gold);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+  #certification .certificate-kicker{text-transform:uppercase;letter-spacing:.16em;font-size:10px;color:#5d554a;margin-bottom:8px;text-align:center}
+  #certification .certificate-corporation{text-transform:uppercase;letter-spacing:.12em;font-size:10px;color:var(--gold);margin-bottom:10px;text-align:center}
+  #certification .cert-copy{text-align:left;font-size:14px;line-height:1.5}
+  #certification .seal-block{margin-top:12px;display:grid;justify-items:center;gap:8px}
+  #certification .seal-mark{width:56px;height:56px;border:1.2px dashed rgba(170,124,44,.55);border-radius:50%}
+  #certification .seal-caption{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6c6459;text-align:center}
+}
+
+@media print{
+  #certification .page{padding:.45in .5in .55in}
+  #certification .certificate-frame{box-shadow:none!important;border:1px solid #bba57a;background:#fff}
+  #certification .seal-mark{border-style:solid;background:none}
 }

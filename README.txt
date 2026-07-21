@@ -1,23 +1,25 @@
-STONECARTA WEBSITE — VERSION 1
+STONECARTA WEBSITE — VERSION 2
+
+This package is a static responsive sales and demonstration website.
 
 UPLOAD
-1. Upload every file and the entire assets folder to the same web directory.
-2. Open index.html.
-3. Point StoneCarta.com to that directory when the domain and hosting are ready.
+1. Upload all files and the assets folder without changing their relative paths.
+2. Point StoneCarta.com to the folder containing index.html.
+3. Replace demo@stonecarta.com in script.js when the demonstration mailbox is finalized.
 
-DEMONSTRATION FORM
-The Version 1 form opens a prepared email addressed to demo@stonecarta.com.
-Before public launch:
-- create the demo@stonecarta.com mailbox; or
-- replace the mailto behaviour in script.js with Formspree, Basin, HubSpot or another form endpoint.
+VERSION 2 FEATURES
+- Production-style StoneCarta SC charter seal and wordmark
+- Cinematic animated hero sequence
+- Animated CORE dashboard statistics
+- CORE-to-ORE product journey
+- Meeting preparation, live decision and draft-minute story
+- Interactive officer role presentation
+- Animated annual compliance-resolution workflow
+- Institutional continuity timeline
+- Responsive desktop, tablet and mobile layouts
+- Reduced-motion accessibility fallback
 
-PRODUCT SCREENSHOTS
-The package uses the actual CORE and ORE screenshots supplied during development.
-The CORE screenshot has been presented with positive demonstration values on the marketing page while the original image is retained as a visual source.
-
-IMPORTANT CLAIMS
-Do not publish unverified claims such as “enterprise-grade security,” “encrypted hosting,” “globally compliant,” or “automatically legally compliant.”
-Use: “annual jurisdiction-specific compliance comparison and issue-resolution workflows.”
-
-LEGAL
-The disclaimer text is a business draft, not legal advice. Have privacy, terms, subscription, data-processing and legal disclaimer documents reviewed before accepting customers.
+IMPORTANT
+The demonstration form currently opens the visitor's email client. Connect it to a form endpoint before public launch.
+The product images use the current CORE and ORE screenshots and can be replaced later without restructuring the page.
+CORE organizes governance workflows and does not provide legal advice or certify compliance.

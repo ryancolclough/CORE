@@ -1,9 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="title">
-<title>StoneCarta seal</title>
-<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f1d38a"/><stop offset=".5" stop-color="#b98a43"/><stop offset="1" stop-color="#7c5728"/></linearGradient></defs>
-<circle cx="100" cy="100" r="92" fill="#090a0b" stroke="url(#g)" stroke-width="5"/>
-<circle cx="100" cy="100" r="78" fill="none" stroke="#b98a43" stroke-width="2" opacity=".8"/>
-<path d="M63 64c0-20 14-31 37-31 15 0 28 5 37 15l-13 14c-7-8-14-11-24-11-10 0-17 5-17 13 0 9 8 12 22 18 20 8 32 18 32 38 0 27-20 44-49 44-19 0-37-8-48-22l14-15c10 12 21 18 35 18 14 0 25-8 25-20 0-11-9-16-25-22-18-7-26-17-26-39Z" fill="url(#g)"/>
-<path d="M126 59c-8-6-16-8-25-8-13 0-21 6-21 15 0 8 6 12 17 17l9 4c18 8 28 18 28 37 0 26-19 42-47 42-9 0-18-2-26-6" fill="none" stroke="#f1e6cc" stroke-width="4" opacity=".9"/>
-<path d="M68 157h64M77 164h46M83 171h34" stroke="url(#g)" stroke-width="4" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 92" role="img" aria-labelledby="title desc">
+  <title id="title">StoneCarta</title><desc id="desc">A refined circular charter seal with SC monogram and foundation pillars.</desc>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f0d693"/><stop offset=".48" stop-color="#c8a45d"/><stop offset="1" stop-color="#8b682f"/></linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#g)" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="45" cy="45" r="39" stroke-width="1.4"/><circle cx="45" cy="45" r="34" stroke-width=".75" opacity=".75"/>
+    <path d="M25 31c5-8 13-12 22-12 6 0 11 1 15 4M62 25c-5 1-10 4-13 8-3 4-4 8-4 12 0 6 2 10 6 13 4 4 9 5 15 4" stroke-width="2"/>
+    <path d="M58 29c-3-4-7-6-12-6-8 0-14 5-14 11 0 7 7 9 14 11 8 2 15 5 15 12 0 7-7 12-16 12-7 0-13-3-17-8" stroke-width="1.8"/>
+    <path d="M22 71h46M27 68h36M30 63h30M33 61V49M40 61V47M50 61V47M57 61V49" stroke-width="1.25"/>
+    <path d="M30 47h30l-3-4H33zM27 68l3 3h30l3-3" stroke-width="1"/>
+  </g>
+  <g fill="#f4efe5">
+    <text x="99" y="42" font-family="Georgia,Times New Roman,serif" font-size="27" letter-spacing="4.5">STONECARTA</text>
+    <text x="101" y="61" font-family="Arial,sans-serif" font-size="7.5" letter-spacing="2.35" fill="#c8a45d">BUILT ON LEGACY · STRUCTURED FOR CONTINUITY</text>
+  </g>
 </svg>
